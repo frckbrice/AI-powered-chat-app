@@ -1,0 +1,81 @@
+name: Vercel Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview to Vercel
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@^39
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=preview --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID"
+
+      - name: Build (Vercel)
+        run: vercel build --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID" --environment=preview
+
+      - name: Deploy (Preview)
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --scope $VERCEL_ORG_ID --project $VERCEL_PROJECT_ID --token $VERCEL_TOKEN | tail -n 1 | tr -d '\n\r')
+          echo "url=$url" >> $GITHUB_OUTPUT
+          echo "Preview URL: $url"
+
+      - name: Comment Preview URL on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = process.env.DEPLOY_URL
+            const body = `Vercel Preview Deployment: ${url}`
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            })
+        env:
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+
+      - name: Check security headers
+        run: |
+          URL="${{ steps.deploy.outputs.url }}"
+          echo "Checking security headers for $URL"
+          HEADERS=$(curl -sI "$URL")
+          echo "$HEADERS"
+          echo "$HEADERS" | grep -qi "x-frame-options: deny" || { echo "Missing X-Frame-Options: DENY"; exit 1; }
+          echo "$HEADERS" | grep -qi "x-content-type-options: nosniff" || { echo "Missing X-Content-Type-Options: nosniff"; exit 1; }
+          echo "$HEADERS" | grep -qi "referrer-policy: strict-origin-when-cross-origin" || { echo "Missing Referrer-Policy"; exit 1; }
+
+      - name: Run Lighthouse CI on Preview
+        run: |
+          npm i -g @lhci/cli@0.13.x
+          lhci autorun --collect.url="${{ steps.deploy.outputs.url }}" --collect.numberOfRuns=1 || echo "LHCI completed with non-zero status"

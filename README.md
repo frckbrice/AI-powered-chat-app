@@ -1,37 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WhatsApp Clone (Next.js)
+
+A WhatsApp-like chat UI built with Next.js, React, Tailwind CSS, and Radix UI.
+
+This README is iterative and will be updated as the project evolves.
+
+## Stack
+- Next.js 15 (App Router) + React 19
+- TypeScript
+- Tailwind CSS 3
+- Radix UI
+- Yarn (package manager)
+- Vitest + Testing Library (unit tests)
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies (Yarn):
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
+- `yarn dev`: Start the dev server (Turbopack)
+- `yarn build`: Build for production
+- `yarn start`: Start the production server
+- `yarn lint`: Run ESLint
+- `yarn test`: Run unit tests once
+- `yarn test:watch`: Run unit tests in watch mode
+- `yarn ci`: Lint, test with coverage, then build
+ - `yarn lhci`: Run Lighthouse locally against http://localhost:3000
+ - `yarn check:headers`: Verify key security headers on http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Testing
+This project uses Vitest with jsdom and Testing Library.
 
-## Learn More
+- Test setup lives in `src/test/setup.ts`.
+- Example test: `src/components/ui/__tests__/button.test.tsx`.
 
-To learn more about Next.js, take a look at the following resources:
+Run tests:
+```bash
+yarn test
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+If you enable Clerk or remote auth/Convex features, set required variables:
 
-## Deploy on Vercel
+```bash
+# Development convenience (only if integrating Clerk)
+NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN=http://localhost
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app does not require this variable to run unless you wire up Clerk.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# AI-powered-whatsapp-clone
+## Docker
+A multi-stage Dockerfile is provided for production builds.
+
+Build and run locally:
+```bash
+docker build -t whatsapp-clone .
+docker run -p 3000:3000 whatsapp-clone
+```
+
+## CI/CD (GitHub Actions)
+Workflow at `.github/workflows/ci.yml` runs on push/PR to `main`:
+- Yarn install (cached)
+- Lint
+- Test (with coverage)
+- Build
+- Build and push Docker image to GHCR (`ghcr.io/<owner>/<repo>:sha-<sha>`) if the build/test stage succeeds
+
+Ensure GitHub Packages is enabled for your repository if you want Docker pushes to GHCR.
+
+## Code Review (CodeRabbit)
+`.coderabbit.yml` config enables automatic PR reviews focusing on performance, errors, maintainability, and test coverage. Install/enable the CodeRabbit app on your repo to activate.
+
+## Notes
+- Uses Yarn as the package manager.
+- Tailwind v3 is configured via PostCSS (`postcss.config.mjs`).
+- This README will be extended as features are added (auth, backend, messaging, etc.).
