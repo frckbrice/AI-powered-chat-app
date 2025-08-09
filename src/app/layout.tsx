@@ -14,7 +14,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
@@ -29,12 +28,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ConvexClientProvider>
-            {children}
-          </ConvexClientProvider>
+          <ConvexClientProvider>{children}</ConvexClientProvider>
         </ThemeProvider>
       </body>
     </html>
-   
   );
 }

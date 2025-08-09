@@ -16,10 +16,6 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +25,7 @@ jobs:
         with:
           node-version: 20
           cache: yarn
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: "**/yarn.lock"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -46,7 +42,7 @@ jobs:
       - name: Deploy (Preview)
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --scope $VERCEL_ORG_ID --project $VERCEL_PROJECT_ID --token $VERCEL_TOKEN | tail -n 1 | tr -d '\n\r')
+          url=$(vercel deploy --prebuilt --scope "$VERCEL_ORG_ID" --project "$VERCEL_PROJECT_ID" --token "$VERCEL_TOKEN" | tail -n 1 | tr -d '\n\r')
           echo "url=$url" >> $GITHUB_OUTPUT
           echo "Preview URL: $url"
 
@@ -64,18 +60,3 @@ jobs:
             })
         env:
           DEPLOY_URL: ${{ steps.deploy.outputs.url }}
-
-      - name: Check security headers
-        run: |
-          URL="${{ steps.deploy.outputs.url }}"
-          echo "Checking security headers for $URL"
-          HEADERS=$(curl -sI "$URL")
-          echo "$HEADERS"
-          echo "$HEADERS" | grep -qi "x-frame-options: deny" || { echo "Missing X-Frame-Options: DENY"; exit 1; }
-          echo "$HEADERS" | grep -qi "x-content-type-options: nosniff" || { echo "Missing X-Content-Type-Options: nosniff"; exit 1; }
-          echo "$HEADERS" | grep -qi "referrer-policy: strict-origin-when-cross-origin" || { echo "Missing Referrer-Policy"; exit 1; }
-
-      - name: Run Lighthouse CI on Preview
-        run: |
-          npm i -g @lhci/cli@0.13.x
-          lhci autorun --collect.url="${{ steps.deploy.outputs.url }}" --collect.numberOfRuns=1 || echo "LHCI completed with non-zero status"

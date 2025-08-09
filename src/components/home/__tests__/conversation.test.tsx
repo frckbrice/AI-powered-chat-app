@@ -35,11 +35,9 @@ describe("Conversation", () => {
           ...baseConversation,
           lastMessage: { ...baseConversation.lastMessage!, messageType: "image" },
         }}
-      />
+      />,
     );
     // the text is not shown for a non-text message
     expect(screen.queryByText(/Hello world/)).not.toBeInTheDocument();
   });
 });
-
-

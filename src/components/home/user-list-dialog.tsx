@@ -142,7 +142,7 @@
 // 					{users?.map((user) => (
 // 						<div
 // 							key={user._id}
-// 							className={`flex gap-3 items-center p-2 rounded cursor-pointer active:scale-95 
+// 							className={`flex gap-3 items-center p-2 rounded cursor-pointer active:scale-95
 // 								transition-all ease-in-out duration-300
 // 							${selectedUsers.includes(user._id) ? "bg-green-primary" : ""}`}
 // 							onClick={() => {

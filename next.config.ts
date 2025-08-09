@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
-/** @type {import('next').NextConfig} */
-const withPWA = require("@ducanh2912/next-pwa").default({
+import withPWAFactory from "@ducanh2912/next-pwa";
+
+const withPWA = withPWAFactory({
   dest: "public",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
-  swcMinify: true,
   disable: process.env.NODE_ENV === "development",
   fallbacks: {
     document: "/offline",
@@ -18,19 +18,19 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-   remotePatterns: [
-    {
-      protocol: "https",
-      hostname: "upload.wikimedia.org",
-    },
-    {
-      protocol: "https",
-      hostname: "images.unsplash.com",
-    },
-    {
-      protocol: "https",
-      hostname: "images.pexels.com",
-    },
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
     ],
   },
   headers: async () => {
@@ -42,18 +42,36 @@ const nextConfig: NextConfig = {
       "https://*.clerkstage.dev",
       "https://*.clerk.accounts.dev",
     ];
+    const cfTurnstile = "https://challenges.cloudflare.com";
 
-    const scriptParts = ["'self'", "'unsafe-inline'", ...(isDev ? ["'unsafe-eval'"] : []), ...(clerkEnabled ? clerkHosts : [])];
-    const connectParts = ["'self'", "https:", ...(isDev ? ["ws:", "wss:"] : []), ...(clerkEnabled ? clerkHosts : [])];
-    const frameParts = ["'self'", ...(clerkEnabled ? clerkHosts : [])];
+    const scriptParts = [
+      "'self'",
+      "'unsafe-inline'",
+      ...(isDev ? ["'unsafe-eval'"] : []),
+      ...(clerkEnabled ? clerkHosts : []),
+      cfTurnstile,
+    ];
+    const connectParts = [
+      "'self'",
+      "https:",
+      ...(isDev ? ["ws:", "wss:"] : []),
+      ...(clerkEnabled ? clerkHosts : []),
+    ];
+    const frameParts = ["'self'", ...(clerkEnabled ? clerkHosts : []), cfTurnstile];
     const imgParts = ["'self'", "data:", "https:", ...(clerkEnabled ? clerkHosts : [])];
     const fontParts = ["'self'", "https:", "data:"];
+    // Allow web workers created from blob: (Clerk may create a worker from a blob URL)
+    const workerParts = ["'self'", "blob:"];
+    // Fallback for older browsers that rely on child-src instead of worker-src
+    const childParts = ["'self'", "blob:"];
 
     const scriptSrc = scriptParts.join(" ");
     const connectSrc = connectParts.join(" ");
     const frameSrc = frameParts.join(" ");
     const imgSrc = imgParts.join(" ");
     const fontSrc = fontParts.join(" ");
+    const workerSrc = workerParts.join(" ");
+    const childSrc = childParts.join(" ");
 
     return [
       {
@@ -74,14 +92,18 @@ const nextConfig: NextConfig = {
               `connect-src ${connectSrc}`,
               `frame-src ${frameSrc}`,
               `font-src ${fontSrc}`,
+              `worker-src ${workerSrc}`,
+              `child-src ${childSrc}`,
             ].join("; "),
           },
-          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=63072000; includeSubDomains; preload",
+          },
         ],
       },
     ];
   },
 };
-
 
 export default withPWA(nextConfig);

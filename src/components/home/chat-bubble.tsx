@@ -1,5 +1,6 @@
 "use client";
 
+import type { FC } from "react";
 // import { MessageSeenSvg } from "@/lib/svgs";
 // import { IMessage, useConversationStore } from "@/store/chat-store";
 // import ChatBubbleAvatar from "./chat-bubble-avatar";
@@ -155,20 +156,19 @@
 // };
 
 type BasicMessage = {
-    _id: string;
-    content: string;
-    sender: string;
-    messageType: string;
+  _id: string;
+  content: string;
+  sender: string;
+  messageType: string;
 };
 
 // TODO: Implement ChatBubble component. The original implementation was removed to reduce bundle size.
-const ChatBubble = ({
-    message,
-    previousMessage,
-}: {
-    message?: BasicMessage;
-    previousMessage?: BasicMessage;
-}) => {
-    return null;
+type ChatBubbleProps = {
+  message?: BasicMessage;
+  previousMessage?: BasicMessage;
+};
+
+const ChatBubble: FC<ChatBubbleProps> = () => {
+  return <div>ChatBubble</div>;
 };
 export default ChatBubble;
