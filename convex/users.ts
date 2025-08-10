@@ -1,6 +1,31 @@
-import { ConvexError, v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, query, internalQuery } from "./_generated/server";
+import { v } from "convex/values";
+import { ConvexError } from "convex/values";
+import type { QueryCtx, MutationCtx } from "./_generated/server";
 
+// =======================
+// Constants
+// =======================
+const DEFAULT_GUEST = {
+  email: "unknown@example.com",
+  name: "Guest",
+  image: "https://picsum.photos/64",
+  isOnline: true,
+};
+
+// =======================
+// Helper: find user by tokenIdentifier
+// =======================
+async function findUserByToken(ctx: QueryCtx | MutationCtx, tokenIdentifier: string) {
+  return ctx.db
+    .query("users")
+    .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenIdentifier))
+    .unique();
+}
+
+// =======================
+// Mutations
+// =======================
 export const createUser = internalMutation({
   args: {
     tokenIdentifier: v.string(),
@@ -9,33 +34,31 @@ export const createUser = internalMutation({
     image: v.string(),
   },
   handler: async (ctx, args) => {
-    // Upsert: if a placeholder row was created by session.created, patch it.
-    const existing = await ctx.db
-      .query("users")
-      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", args.tokenIdentifier))
-      .unique();
+    try {
+      const existing = await findUserByToken(ctx, args.tokenIdentifier);
 
-    if (existing) {
-      await ctx.db.patch(existing._id, {
-        email: args.email,
-        name: args.name,
-        image: args.image,
+      if (existing) {
+        await ctx.db.patch(existing._id, {
+          email: args.email,
+          name: args.name,
+          image: args.image,
+          isOnline: true,
+        });
+        console.log("[users:createUser] Upserted (patched) user:", existing._id);
+        return existing._id;
+      }
+
+      const userId = await ctx.db.insert("users", {
+        ...args,
         isOnline: true,
       });
-      console.log("\n\n user upserted (patched) in convex DB", existing._id);
-      return existing._id;
+
+      console.log("[users:createUser] Created user:", userId);
+      return userId;
+    } catch (error) {
+      console.error("[users:createUser] Error:", error);
+      throw new ConvexError("Failed to create or update user");
     }
-
-    const user = await ctx.db.insert("users", {
-      tokenIdentifier: args.tokenIdentifier,
-      email: args.email,
-      name: args.name,
-      image: args.image,
-      isOnline: true,
-    });
-
-    console.log("\n\n user created in convex DB", user);
-    return user;
   },
 });
 
@@ -45,98 +68,88 @@ export const updateUser = internalMutation({
     image: v.string(),
   },
   async handler(ctx, args) {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", args.tokenIdentifier))
-      .unique();
+    try {
+      const user = await findUserByToken(ctx, args.tokenIdentifier);
+      if (!user) throw new ConvexError("User not found");
 
-    if (!user) {
-      throw new ConvexError("User not found");
+      await ctx.db.patch(user._id, { image: args.image });
+      console.log("[users:updateUser] Updated image for:", user._id);
+    } catch (error) {
+      console.error("[users:updateUser] Error:", error);
+      throw new ConvexError("Failed to update user");
     }
-
-    await ctx.db.patch(user._id, {
-      image: args.image,
-    });
   },
 });
 
 export const setUserOnline = internalMutation({
-  args: {
-    tokenIdentifier: v.string(),
-  },
+  args: { tokenIdentifier: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", args.tokenIdentifier))
-      .unique();
+    try {
+      const user = await findUserByToken(ctx, args.tokenIdentifier);
+      if (!user) {
+        const id = await ctx.db.insert("users", {
+          tokenIdentifier: args.tokenIdentifier,
+          ...DEFAULT_GUEST,
+        });
+        console.log("[users:setUserOnline] Created guest user:", id);
+        return;
+      }
 
-    if (!user) {
-      // Upsert: create a minimal user row to avoid race with user.created
-      await ctx.db.insert("users", {
-        tokenIdentifier: args.tokenIdentifier,
-        email: "unknown@example.com",
-        name: "Guest",
-        image: "https://picsum.photos/64",
-        isOnline: true,
-      });
-      return;
+      await ctx.db.patch(user._id, { isOnline: true });
+      console.log("[users:setUserOnline] Marked online:", user._id);
+    } catch (error) {
+      console.error("[users:setUserOnline] Error:", error);
     }
-
-    await ctx.db.patch(user._id, { isOnline: true });
   },
 });
 
 export const setUserOffline = internalMutation({
-  args: {
-    tokenIdentifier: v.string(),
-  },
+  args: { tokenIdentifier: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", args.tokenIdentifier))
-      .unique();
+    try {
+      const user = await findUserByToken(ctx, args.tokenIdentifier);
+      if (!user) {
+        console.warn("[users:setUserOffline] User not found:", args.tokenIdentifier);
+        return;
+      }
 
-    if (!user) {
-      // Likely out-of-order delivery (ended before created) or already deleted; no-op
-      console.log("[users:setUserOffline] User not found, tokenIdentifier=", args.tokenIdentifier);
-      return;
+      await ctx.db.patch(user._id, { isOnline: false });
+      console.log("[users:setUserOffline] Marked offline:", user._id);
+    } catch (error) {
+      console.error("[users:setUserOffline] Error:", error);
     }
-
-    const updatedUser = await ctx.db.patch(user._id, { isOnline: false });
-    console.log("\n\n user offline in convex DB", updatedUser);
-    return updatedUser;
   },
 });
 
+// =======================
+// Queries
+// =======================
 export const getUsers = query({
   args: {},
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new ConvexError("Unauthorized");
-    }
 
-    const users = await ctx.db.query("users").collect();
-    return users.filter((user) => user.tokenIdentifier !== identity.tokenIdentifier);
+    console.log("identity: ", await ctx.auth.getUserIdentity());
+    if (!identity) return null;
+
+    // Prefer filtering at DB level instead of in JS
+    const users = await ctx.db
+      .query("users")
+      .filter((q) => q.neq(q.field("tokenIdentifier"), identity.tokenIdentifier))
+      .collect();
+
+    return users;
   },
 });
 
 export const getMe = query({
   args: {},
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new ConvexError("Unauthorized");
-    }
+    if (!identity) return null;
 
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", identity.tokenIdentifier))
-      .unique();
-
-    if (!user) {
-      throw new ConvexError("User not found");
-    }
+    const user = await findUserByToken(ctx, identity.tokenIdentifier);
+    if (!user) throw new ConvexError("User not found");
 
     return user;
   },

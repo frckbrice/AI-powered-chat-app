@@ -1,10 +1,11 @@
-import { ListFilter, MessageSquareDiff, Search } from "lucide-react";
+import { Search, ListFilter } from "lucide-react";
 import { Input } from "../ui/input";
 import ModeToggle from "../providers/theme/theme-switcher";
 import { conversations } from "@/dummy-data/db";
 import Conversation from "./conversation";
 import { ConversationType } from "../types";
 import { UserButton } from "@clerk/nextjs";
+import UserListDialog from "./user-list-dialog";
 
 const LeftPanel = () => {
   // const conversations = [];
@@ -18,8 +19,12 @@ const LeftPanel = () => {
           <UserButton />
 
           <div className="flex items-center gap-3">
-            <MessageSquareDiff size={20} />{" "}
-            {/* TODO: This line will be replaced with <UserListDialog /> */}
+            {/* <MessageSquareDiff size={20} /> */}
+
+            {/* user list dialog */}
+            <UserListDialog />
+
+            {/* mode toggle */}
             <ModeToggle />
             {/* <LogOut size={20} className='cursor-pointer' /> */}
           </div>

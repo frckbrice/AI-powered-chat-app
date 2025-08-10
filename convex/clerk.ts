@@ -19,9 +19,17 @@ export const fulfill = internalAction({
     payload: v.string(),
   },
   handler: async (ctx, args) => {
-    const wh = new Webhook(WEB_HOOK_SECRET);
-    const payload = wh.verify(args.payload, args.headers) as WebhookEvent;
-    return payload;
+    try {
+      const wh = new Webhook(WEB_HOOK_SECRET);
+      const payload = wh.verify(args.payload, args.headers) as WebhookEvent;
+
+      console.log("Webhook verified:", payload.type);
+
+      return payload;
+    } catch (error) {
+      console.error("Webhook Error🔥🔥", error);
+      throw error;
+    }
   },
 });
 

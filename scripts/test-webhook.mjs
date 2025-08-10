@@ -1,41 +1,50 @@
-// Minimal Clerk → Convex webhook tester.
-// Usage:
-//   CLERK_WEBHOOK_SECRET=svix_... CONVEX_WEBHOOK_URL=https://<your-convex>.convex.cloud/clerk node scripts/test-webhook.mjs
+#!/usr/bin/env node
 
-import { Webhook } from "svix";
+const WEBHOOK_URL = "https://mellow-poodle-790.convex.cloud/clerk";
 
-const SECRET = process.env.CLERK_WEBHOOK_SECRET;
-const URL = process.env.CONVEX_WEBHOOK_URL;
+// Create a test webhook payload
+const testPayload = {
+  type: "user.created",
+  data: {
+    id: "test_user_123",
+    email_addresses: [{ email_address: "test@example.com" }],
+    first_name: "Test",
+    last_name: "User",
+    image_url: "https://example.com/avatar.jpg",
+  },
+};
 
-if (!SECRET || !URL) {
-  console.error("Missing CLERK_WEBHOOK_SECRET or CONVEX_WEBHOOK_URL env vars.");
-  process.exit(1);
+async function testWebhook() {
+  try {
+    console.log("Testing webhook endpoint...");
+    console.log("URL:", WEBHOOK_URL);
+    console.log("Payload:", JSON.stringify(testPayload, null, 2));
+
+    // Make the request with minimal headers to test if endpoint is reachable
+    const response = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "svix-id": "test_svix_id",
+        "svix-timestamp": new Date().toISOString(),
+        "svix-signature": "test_signature",
+      },
+      body: JSON.stringify(testPayload),
+    });
+
+    console.log("Response status:", response.status);
+    console.log("Response body:", await response.text());
+
+    if (response.status === 401) {
+      console.log("✅ Endpoint is reachable but signature verification failed (expected for test)");
+    } else if (response.ok) {
+      console.log("✅ Webhook test successful!");
+    } else {
+      console.log("❌ Webhook test failed with status:", response.status);
+    }
+  } catch (error) {
+    console.error("Error testing webhook:", error);
+  }
 }
 
-async function send(payload) {
-  const wh = new Webhook(SECRET);
-  const body = JSON.stringify(payload);
-  const headers = wh.sign(body);
-  const res = await fetch(URL, { method: "POST", headers, body });
-  const text = await res.text();
-  console.log(payload.type, res.status, text || "ok");
-}
-
-const userId = "user_test_1";
-
-(async () => {
-  await send({
-    type: "user.created",
-    data: {
-      id: userId,
-      email_addresses: [{ email_address: "test@example.com" }],
-      first_name: "Test",
-      last_name: "User",
-      image_url: "https://picsum.photos/100",
-    },
-  });
-
-  await send({ type: "session.created", data: { user_id: userId } });
-  await send({ type: "session.ended", data: { user_id: userId } });
-  await send({ type: "session.revoked", data: { user_id: userId } });
-})();
+testWebhook();

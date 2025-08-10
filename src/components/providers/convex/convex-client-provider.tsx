@@ -1,22 +1,32 @@
 "use client";
 
-import { ClerkProvider, useAuth } from "@clerk/nextjs";
-import { ConvexReactClient } from "convex/react";
+import { useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { CONVEX_PUBLIC } from "../../../lib/constantes";
 
-const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
-if (!convexUrl) {
-  throw new Error("Missing NEXT_PUBLIC_CONVEX_URL in your .env file");
+import { ConvexReactClient } from "convex/react";
+
+if (!CONVEX_PUBLIC) {
+  throw new Error("Missing NEXT_PUBLIC_CONVEX_URL in your .env file or NO public clerk public key");
 }
-const convex = new ConvexReactClient(convexUrl, { verbose: true });
+const convex = new ConvexReactClient(CONVEX_PUBLIC, { verbose: true });
 
-export function ConvexClientProvider({ children }: { children: ReactNode }) {
+export function ConvexClerkProvider({ children }: { children: ReactNode }) {
+  const { getToken } = useAuth();
+
+  useEffect(() => {
+    convex.setAuth(async () => {
+      const token = await getToken({ template: "convex" });
+
+      console.log("token from clerk: ", token);
+      return token;
+    });
+  }, [getToken]);
+
   return (
-    <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}>
-      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-        {children}
-      </ConvexProviderWithClerk>
-    </ClerkProvider>
+    <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+      {children}
+    </ConvexProviderWithClerk>
   );
 }

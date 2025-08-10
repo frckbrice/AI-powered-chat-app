@@ -17,6 +17,7 @@ export const createConversation = mutation({
       .query("conversations")
       .filter((q) =>
         q.or(
+          // taget [['a', 'b'], ['b', 'a']]
           q.eq(q.field("participants"), args.participants),
           q.eq(q.field("participants"), args.participants.reverse()),
         ),
@@ -47,7 +48,7 @@ export const createConversation = mutation({
 
 export const getMyConversations = query({
   args: {},
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new ConvexError("Unauthorized");
 

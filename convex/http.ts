@@ -65,6 +65,19 @@ http.route({
       });
     } catch (error) {
       console.log("Webhook Error🔥🔥", error);
+
+      // Return more specific error responses based on the error type
+      if (error instanceof Error) {
+        if (error.message.includes("No matching signature found")) {
+          console.error("Signature verification failed - check webhook secret and endpoint URL");
+          return new Response("Signature verification failed", { status: 401 });
+        }
+        if (error.message.includes("Invalid signature")) {
+          console.error("Invalid signature - check webhook secret");
+          return new Response("Invalid signature", { status: 401 });
+        }
+      }
+
       return new Response("Webhook Error", {
         status: 400,
       });
