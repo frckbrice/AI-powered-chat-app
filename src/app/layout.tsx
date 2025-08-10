@@ -5,9 +5,22 @@ import { ThemeProvider } from "@/components/providers/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkConvexProvider } from "@/components/providers/convex/convex-clerk-provider";
 
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: "#0b141a",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "WhatsApp Clone",
   description: "A WhatsApp-like chat UI",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({

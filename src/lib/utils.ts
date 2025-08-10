@@ -82,13 +82,22 @@ export const getRelativeDateTime = (message: MessageLike, previousMessage?: Mess
   }
 };
 
-export function randomID(len: number) {
-  let result = "";
-  if (result) return result;
+// Fix dead code and improve randomness in randomID
+export function randomID(len = 5) {
   const chars = "12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP";
   const maxPos = chars.length;
-  const lengthToGenerate = len || 5;
-  for (let index = 0; index < lengthToGenerate; index++) {
+  let result = "";
+
+  if (typeof crypto !== "undefined" && "getRandomValues" in crypto) {
+    const bytes = new Uint32Array(len);
+    crypto.getRandomValues(bytes);
+    for (let i = 0; i < len; i++) {
+      result += chars[bytes[i] % maxPos];
+    }
+    return result;
+  }
+
+  for (let i = 0; i < len; i++) {
     result += chars.charAt(Math.floor(Math.random() * maxPos));
   }
   return result;

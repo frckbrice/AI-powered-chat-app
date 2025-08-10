@@ -24,6 +24,10 @@ COPY --from=builder /app/public ./public
 
 # Install only production dependencies
 RUN corepack enable && yarn install --frozen-lockfile --production=true
+RUN yarn add -D @types/node
+
+# Drop privileges for runtime security
+USER node
 
 EXPOSE 3000
 CMD ["yarn", "start"]

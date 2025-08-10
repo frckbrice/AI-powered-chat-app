@@ -1,14 +1,29 @@
+"use client";
 import { Search, ListFilter } from "lucide-react";
 import { Input } from "../ui/input";
 import ModeToggle from "../providers/theme/theme-switcher";
-import { conversations } from "@/dummy-data/db";
+// import { conversations } from "@/dummy-data/db";
+import { api } from "../../../convex/_generated/api";
 import Conversation from "./conversation";
 import { ConversationType } from "../types";
 import { UserButton } from "@clerk/nextjs";
 import UserListDialog from "./user-list-dialog";
+import { useState } from "react";
+import { useConvexAuth, useQuery } from "convex/react";
 
 const LeftPanel = () => {
-  // const conversations = [];
+  const { isAuthenticated } = useConvexAuth();
+  const conversations = useQuery(
+    api.conversations.getMyConversations,
+    isAuthenticated ? undefined : "skip",
+  );
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredConversations = conversations?.filter(
+    (conv) =>
+      conv.groupName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conv.participants.some((p) => p.toLowerCase().includes(searchQuery.toLowerCase())),
+  );
 
   return (
     <div className="w-1/4 border-gray-600 border-r">
@@ -38,6 +53,8 @@ const LeftPanel = () => {
             />
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search or start a new chat"
               className="pl-10 py-2 text-sm w-full rounded shadow-sm bg-gray-primary focus-visible:ring-transparent"
             />
@@ -50,11 +67,14 @@ const LeftPanel = () => {
       <div className="my-3 flex flex-col gap-0 max-h-[80%] overflow-auto">
         {/* Conversations will go here*/}
 
-        {conversations?.map((conversation) => (
-          <Conversation key={conversation._id} conversation={conversation as ConversationType} />
+        {filteredConversations?.map((conversation) => (
+          <Conversation
+            key={conversation._id}
+            conversation={conversation as unknown as ConversationType}
+          />
         ))}
 
-        {conversations?.length === 0 && (
+        {filteredConversations?.length === 0 && (
           <>
             <p className="text-center text-gray-500 text-sm mt-3">No conversations yet</p>
             <p className="text-center text-gray-500 text-sm mt-3 ">

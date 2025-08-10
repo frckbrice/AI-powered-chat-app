@@ -1,5 +1,15 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { formatDate, getRelativeDateTime, type MessageLike } from "@/lib/utils";
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  // Pick a stable noon time to avoid DST edge cases
+  vi.setSystemTime(new Date("2025-01-15T12:00:00Z"));
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe("utils.formatDate", () => {
   it("returns time for today", () => {
@@ -17,8 +27,10 @@ describe("utils.formatDate", () => {
   it("returns weekday for dates within last week (not today/yesterday)", () => {
     const threeDaysAgo = Date.now() - 3 * 24 * 60 * 60 * 1000;
     const result = formatDate(threeDaysAgo);
-    // Weekday name like Monday, Tuesday, etc.
-    expect(result).toMatch(/^[A-Za-z]+$/);
+    const expected = new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(
+      new Date(threeDaysAgo),
+    );
+    expect(result).toBe(expected);
   });
 
   it("returns short date for older dates", () => {

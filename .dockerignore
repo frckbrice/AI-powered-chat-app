@@ -6,3 +6,27 @@ Dockerfile
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+coverage
+dist
+build
+.DS_Store
+.vercel
+.turbo
+.pnpm-store
+
+# Do not send secrets to the Docker daemon
+.env
+.env.*
+!.env.example
+coverage
+dist
+build
+.DS_Store
+.vercel
+.turbo
+.pnpm-store
+
+# Do not send secrets to the Docker daemon
+.env
+.env.*
+!.env.example

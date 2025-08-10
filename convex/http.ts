@@ -16,6 +16,13 @@ http.route({
     const payloadString = await req.text();
     const headerPayload = req.headers;
 
+    const svixId = headerPayload.get("svix-id");
+    const svixSig = headerPayload.get("svix-signature");
+    const svixTs = headerPayload.get("svix-timestamp");
+    if (!svixId || !svixSig || !svixTs) {
+      return new Response("Missing Svix headers", { status: 400 });
+    }
+
     try {
       const result = await ctx.runAction(internal.clerk.fulfill, {
         payload: payloadString,
@@ -30,7 +37,7 @@ http.route({
 
       switch (result.type) {
         case "user.created":
-          console.log("\n\n user created", result.data);
+          console.log("\n\n user.created", { id: result.data.id });
           await ctx.runMutation(internal.users.createUser, {
             tokenIdentifier: `${ISSUER}|${result.data.id}`,
             email: result.data.email_addresses[0]?.email_address,
@@ -39,21 +46,21 @@ http.route({
           });
           break;
         case "user.updated":
-          console.log("\n\n user updated", result.data);
+          console.log("\n\n user.updated", { id: result.data.id });
           await ctx.runMutation(internal.users.updateUser, {
             tokenIdentifier: `${ISSUER}|${result.data.id}`,
             image: result.data.image_url,
           });
           break;
         case "session.created":
-          console.log("\n\n session created", result.data);
+          console.log("\n\n session.created", { userId: result.data.user_id });
           await ctx.runMutation(internal.users.setUserOnline, {
             tokenIdentifier: `${ISSUER}|${result.data.user_id}`,
           });
           break;
         case "session.ended":
         case "session.removed":
-          console.log("\n\n session ended", result.data);
+          console.log("\n\n session.ended", { userId: result.data.user_id });
           await ctx.runMutation(internal.users.setUserOffline, {
             tokenIdentifier: `${ISSUER}|${result.data.user_id}`,
           });
@@ -79,7 +86,7 @@ http.route({
       }
 
       return new Response("Webhook Error", {
-        status: 400,
+        status: 500,
       });
     }
   }),

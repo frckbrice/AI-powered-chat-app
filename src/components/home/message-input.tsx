@@ -122,19 +122,21 @@ const MessageInput = () => {
           />
         </div>
         <div className="mr-4 flex items-center gap-3">
-          {msgText.length > 0 ? (
+          {msgText.trim().length > 0 ? (
             <Button
               type="submit"
               size={"sm"}
               className="bg-transparent text-foreground hover:bg-transparent"
+              aria-label="Send message"
             >
               <Send />
             </Button>
           ) : (
             <Button
-              type="submit"
+              type="button"
               size={"sm"}
               className="bg-transparent text-foreground hover:bg-transparent"
+              aria-label="Record voice message"
             >
               <Mic />
             </Button>

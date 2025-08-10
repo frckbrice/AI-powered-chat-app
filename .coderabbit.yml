@@ -1,6 +1,5 @@
 version: 1
 reviews:
-  enabled: true
   languages:
     - typescript
     - javascript
@@ -17,7 +16,8 @@ reviews:
     - high_security_issues
     - test_failures
   request_changes_workflow: true
-
+  auto_review:
+    enabled: true
 auto_review: true
 
 chat:

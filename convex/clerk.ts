@@ -9,16 +9,15 @@ import { internalAction } from "./_generated/server";
 
 const WEB_HOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET as string;
 
-if (!WEB_HOOK_SECRET) {
-  throw new Error("Missing CLERK_WEBHOOK_SECRET in your .env file");
-}
-
 export const fulfill = internalAction({
   args: {
     headers: v.any(),
     payload: v.string(),
   },
   handler: async (ctx, args) => {
+    if (!WEB_HOOK_SECRET) {
+      throw new Error("Missing CLERK_WEBHOOK_SECRET in your .env file");
+    }
     try {
       const wh = new Webhook(WEB_HOOK_SECRET);
       const payload = wh.verify(args.payload, args.headers) as WebhookEvent;

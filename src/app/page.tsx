@@ -1,3 +1,4 @@
+import Script from "next/script";
 import LeftPanel from "../components/home/left-panel";
 import RightPanel from "../components/home/right-panel";
 import { auth } from "@clerk/nextjs/server";
@@ -18,17 +19,15 @@ export default async function Home() {
         <LeftPanel />
         <RightPanel />
       </div>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-                    if ('serviceWorker' in navigator) {
-                      window.addEventListener('load', () => {
-                        navigator.serviceWorker.register('/sw.js').catch(() => {});
-                      });
-                    }
-                  `,
-        }}
-      />
+      <Script id="sw-register" strategy="afterInteractive">
+        {`
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
+          }
+        `}
+      </Script>
     </main>
   );
 }

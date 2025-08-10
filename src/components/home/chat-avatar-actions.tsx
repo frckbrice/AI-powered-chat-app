@@ -7,7 +7,7 @@
 
 // type ChatAvatarActionsProps = {
 // 	message: IMessage;
-// 	me: any;
+// 	me: { _id: Id<"users">; name: string; image?: string; isOnline?: boolean };
 // };
 
 // const ChatAvatarActions = ({ me, message }: ChatAvatarActionsProps) => {

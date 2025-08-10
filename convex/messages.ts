@@ -1,12 +1,11 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { api } from "./_generated/api";
 
 export const sendTextMessage = mutation({
   args: {
     sender: v.string(),
     content: v.string(),
-    conversation: v.id("conversations"),
+    conversationId: v.id("conversations"),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -23,10 +22,11 @@ export const sendTextMessage = mutation({
       throw new ConvexError("User not found");
     }
 
-    const conversation = await ctx.db
-      .query("conversations")
-      .filter((q) => q.eq(q.field("_id"), args.conversation))
-      .first();
+    // const conversation = await ctx.db
+    //   .query("conversations")
+    //   .filter((q) => q.eq(q.field("_id"), args.conversationId))
+    //   .first();
+    const conversation = await ctx.db.get(args.conversationId);
 
     if (!conversation) {
       throw new ConvexError("Conversation not found");
@@ -39,7 +39,7 @@ export const sendTextMessage = mutation({
     await ctx.db.insert("messages", {
       sender: args.sender,
       content: args.content,
-      conversation: args.conversation,
+      conversation: args.conversationId,
       messageType: "text",
     });
 
@@ -131,7 +131,10 @@ export const sendImage = mutation({
       throw new ConvexError("Unauthorized");
     }
 
-    const content = (await ctx.storage.getUrl(args.imgId)) as string;
+    const content = await ctx.storage.getUrl(args.imgId);
+    if (!content) {
+      throw new ConvexError("Failed to get image URL from storage");
+    }
 
     await ctx.db.insert("messages", {
       content: content,

@@ -1,4 +1,4 @@
-import { internalMutation, query, internalQuery } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import type { QueryCtx, MutationCtx } from "./_generated/server";
@@ -129,7 +129,6 @@ export const getUsers = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
-    console.log("identity: ", await ctx.auth.getUserIdentity());
     if (!identity) return null;
 
     // Prefer filtering at DB level instead of in JS
