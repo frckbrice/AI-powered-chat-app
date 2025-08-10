@@ -1,25 +1,33 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen } from "@testing-library/react";
 import ModeToggle from "../theme-switcher";
 
-// Mock next-themes
+// Mock next-themes with stable references
+const mockSetTheme = vi.fn();
+const mockTheme = "light";
+const mockResolvedTheme = "light";
+
 vi.mock("next-themes", () => ({
   useTheme: () => ({
-    setTheme: vi.fn(),
+    setTheme: mockSetTheme,
+    theme: mockTheme,
+    resolvedTheme: mockResolvedTheme,
   }),
 }));
 
 describe("ModeToggle", () => {
-  it("should render theme toggle button and have correct sr-only text", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should render theme toggle button and have correct accessible name", () => {
     render(<ModeToggle />);
 
     const button = screen.getByRole("button");
     expect(button).toBeInTheDocument();
 
-    // Check for sr-only text instead of aria-label
-    const srOnlyText = screen.getByText("Toggle theme");
-    expect(srOnlyText).toBeInTheDocument();
-    expect(srOnlyText).toHaveClass("sr-only");
+    // Check that the button has the correct accessible name
+    expect(button).toHaveAccessibleName("Toggle theme");
   });
 
   it("should render sun and moon icons", () => {
