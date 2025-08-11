@@ -1,6 +1,20 @@
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import Conversation from "@/components/home/conversation";
+import Conversation from "../conversation";
+
+// Mock Convex hooks
+vi.mock("convex/react", () => ({
+  useQuery: vi.fn(() => ({ _id: "user1" })),
+}));
+
+// Mock the chat store
+vi.mock("@/store/chat-store", () => ({
+  useConversationStore: vi.fn(() => ({
+    setSelectedConversation: vi.fn(),
+    selectedConversation: null,
+  })),
+}));
 
 const baseConversation = {
   _id: "1",

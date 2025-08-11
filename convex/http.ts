@@ -2,12 +2,21 @@ import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 
+// https://docs.convex.dev/functions/http-actions
+// Internal functions can only be called by other functions and cannot be called directly from a Convex client.
+
 const http = httpRouter();
 
 const ISSUER =
   (process.env.CLERK_JWT_ISSUER_DOMAIN as string | undefined) ||
   (process.env.CLERK_APP_DOMAIN as string | undefined) ||
   "";
+
+if (!ISSUER) {
+  console.warn(
+    "CLERK_JWT_ISSUER_DOMAIN/CLERK_APP_DOMAIN is not set; webhook user mapping may fail.",
+  );
+}
 
 http.route({
   path: "/clerk",
@@ -93,6 +102,3 @@ http.route({
 });
 
 export default http;
-
-// https://docs.convex.dev/functions/http-actions
-// Internal functions can only be called by other functions and cannot be called directly from a Convex client.
