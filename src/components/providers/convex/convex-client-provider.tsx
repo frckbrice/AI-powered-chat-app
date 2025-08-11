@@ -3,7 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ReactNode, useEffect } from "react";
-import { CONVEX_PUBLIC } from "../../../lib/constantes";
+import { CONVEX_PUBLIC } from "../../../lib/constants";
 
 import { ConvexReactClient } from "convex/react";
 
@@ -17,10 +17,16 @@ export function ConvexClerkProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     convex.setAuth(async () => {
-      const token = await getToken({ template: "convex" });
-
-      console.log("token from clerk: ", token);
-      return token;
+      try {
+        const token = await getToken({ template: "convex" });
+        if (process.env.NODE_ENV === "development") {
+          console.log("token from clerk: ", token);
+        }
+        return token;
+      } catch (error) {
+        console.error("Failed to get auth token:", error);
+        return null;
+      }
     });
   }, [getToken]);
 

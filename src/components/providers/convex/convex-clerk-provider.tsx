@@ -2,7 +2,7 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { ReactNode } from "react";
-import { CLERK_PUBLIC_KEY } from "../../../lib/constantes";
+import { CLERK_PUBLIC_KEY } from "../../../lib/constants";
 import { ConvexClerkProvider } from "./convex-client-provider";
 
 if (!CLERK_PUBLIC_KEY) {

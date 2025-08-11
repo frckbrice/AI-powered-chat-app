@@ -17,7 +17,7 @@ export const createConversation = mutation({
       .query("conversations")
       .filter((q) =>
         q.or(
-          // taget [['a', 'b'], ['b', 'a']]
+          // target [['a', 'b'], ['b', 'a']]
           q.eq(q.field("participants"), args.participants),
           q.eq(q.field("participants"), args.participants.reverse()),
         ),
@@ -122,4 +122,15 @@ export const kickUser = mutation({
 
 export const generateUploadUrl = mutation(async (ctx) => {
   return await ctx.storage.generateUploadUrl();
+});
+
+export const getMembers = query({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx, args) => {
+    const conversation = await ctx.db
+      .query("conversations")
+      .filter((q) => q.eq(q.field("_id"), args.conversationId))
+      .unique();
+    return conversation?.participants;
+  },
 });

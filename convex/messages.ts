@@ -3,7 +3,7 @@ import { mutation, query } from "./_generated/server";
 
 export const sendTextMessage = mutation({
   args: {
-    sender: v.string(),
+    sender: v.id("users"),
     content: v.string(),
     conversationId: v.id("conversations"),
   },
@@ -85,7 +85,7 @@ export const getMessages = query({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error("Unauthorized");
+      throw new ConvexError("Not authenticated");
     }
 
     const messages = await ctx.db
@@ -128,7 +128,7 @@ export const sendImage = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new ConvexError("Unauthorized");
+      throw new ConvexError("Not authenticated");
     }
 
     const content = await ctx.storage.getUrl(args.imgId);
@@ -150,10 +150,13 @@ export const sendVideo = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new ConvexError("Unauthorized");
+      throw new ConvexError("Not authenticated");
     }
 
-    const content = (await ctx.storage.getUrl(args.videoId)) as string;
+    const content = await ctx.storage.getUrl(args.videoId);
+    if (!content) {
+      throw new ConvexError("Failed to get video URL from storage");
+    }
 
     await ctx.db.insert("messages", {
       content: content,

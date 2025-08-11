@@ -56,6 +56,10 @@ If you enable Clerk or remote auth/Convex features, set required variables:
 ```bash
 # Development convenience (only if integrating Clerk)
 NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN=http://localhost
+with something like:
+
+# Development convenience (only if integrating Clerk)
+NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN=https://verb-noun-00.clerk.accounts.dev
 ```
 
 The app does not require this variable to run unless you wire up Clerk.

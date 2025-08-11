@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.pexels.com",
       },
+      {
+        protocol: "https",
+        hostname: "mellow-poodle-790.convex.cloud",
+      },
     ],
   },
   headers: async () => {
