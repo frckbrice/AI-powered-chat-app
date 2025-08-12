@@ -1,24 +1,90 @@
-version: 1
-reviews:
-  languages:
-    - typescript
-    - javascript
-  checks:
-    - performance
-    - security
-    - readability
-    - maintainability
-    - error-handling
-  coverage:
-    minimum: 60
-    patch: 80
-  fail_on:
-    - high_security_issues
-    - test_failures
-  request_changes_workflow: true
-  auto_review:
-    enabled: true
-auto_review: true
+# CodeRabbit Configuration
+# This file configures the CodeRabbit AI-powered code review system
 
-chat:
-  auto_reply: true
+# Repository settings
+repository:
+  # Enable CodeRabbit for this repository
+  enabled: true
+  
+  # Configure review focus areas
+  review:
+    # Performance analysis
+    performance: true
+    
+    # Error detection
+    errors: true
+    
+    # Code maintainability
+    maintainability: true
+    
+    # Test coverage analysis
+    test_coverage: true
+    
+    # Security scanning
+    security: true
+    
+    # Code quality metrics
+    quality: true
+
+# Review settings
+review:
+  # Enable automatic PR reviews
+  auto_review: true
+  
+  # Review all file types
+  file_types:
+    - "*.ts"
+    - "*.tsx"
+    - "*.js"
+    - "*.jsx"
+    - "*.json"
+    - "*.yml"
+    - "*.yaml"
+    - "*.md"
+  
+  # Exclude certain paths
+  exclude_paths:
+    - "node_modules/**"
+    - "dist/**"
+    - "build/**"
+    - ".git/**"
+    - "coverage/**"
+    - "*.lock"
+  
+  # Review thresholds
+  thresholds:
+    # Minimum test coverage
+    test_coverage: 20
+    
+    # Performance budget
+    performance_budget: "2s"
+    
+    # Security score threshold
+    security_score: 80
+
+# AI model settings
+ai:
+  # Use the latest AI model
+  model: "latest"
+  
+  # Enable context-aware reviews
+  context_aware: true
+  
+  # Include code history in reviews
+  include_history: true
+
+# Integration settings
+integrations:
+  # GitHub integration
+  github:
+    # Enable status checks
+    status_checks: true
+    
+    # Comment on PRs
+    comments: true
+    
+    # Request changes if needed
+    request_changes: true
+    
+    # Approve if all checks pass
+    auto_approve: false

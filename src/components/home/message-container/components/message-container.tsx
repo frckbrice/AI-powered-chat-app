@@ -1,9 +1,9 @@
-import ChatBubble from "./chat-bubble";
+import ChatBubble from "../../chat-bubble/components/chat-bubble";
 import { useConvexAuth, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { useConversationStore } from "@/store/chat-store";
+import { api } from "../../../../../convex/_generated/api";
+import { useConversationStore } from "../../../../store/chat-store";
 import { useEffect, useRef } from "react";
-import { IUser } from "../types";
+import { IUser } from "../../../types";
 
 const MessageContainer = () => {
   const { isAuthenticated } = useConvexAuth();

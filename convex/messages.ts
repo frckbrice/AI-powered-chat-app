@@ -124,7 +124,11 @@ export const getMessages = query({
 });
 
 export const sendImage = mutation({
-  args: { imgId: v.id("_storage"), sender: v.id("users"), conversation: v.id("conversations") },
+  args: {
+    imgId: v.id("_storage"),
+    sender: v.id("users"),
+    conversationId: v.id("conversations"),
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
@@ -140,13 +144,17 @@ export const sendImage = mutation({
       content: content,
       sender: args.sender,
       messageType: "image",
-      conversation: args.conversation,
+      conversation: args.conversationId,
     });
   },
 });
 
 export const sendVideo = mutation({
-  args: { videoId: v.id("_storage"), sender: v.id("users"), conversation: v.id("conversations") },
+  args: {
+    videoId: v.id("_storage"),
+    sender: v.id("users"),
+    conversationId: v.id("conversations"),
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
@@ -162,40 +170,7 @@ export const sendVideo = mutation({
       content: content,
       sender: args.sender,
       messageType: "video",
-      conversation: args.conversation,
+      conversation: args.conversationId,
     });
   },
 });
-
-// unoptimized
-
-// export const getMessages = query({
-// 	args:{
-// 		conversation: v.id("conversations"),
-// 	},
-// 	handler: async (ctx, args) => {
-// 		const identity = await ctx.auth.getUserIdentity();
-// 		if (!identity) {
-// 			throw new ConvexError("Not authenticated");
-// 		}
-
-// 		const messages = await ctx.db
-// 		.query("messages")
-// 		.withIndex("by_conversation", q=> q.eq("conversation", args.conversation))
-// 		.collect();
-
-// 		// john => 200 , 1
-// 		const messagesWithSender = await Promise.all(
-// 			messages.map(async (message) => {
-// 				const sender = await ctx.db
-// 				.query("users")
-// 				.filter(q => q.eq(q.field("_id"), message.sender))
-// 				.first();
-
-// 				return {...message,sender}
-// 			})
-// 		)
-
-// 		return messagesWithSender;
-// 	}
-// });

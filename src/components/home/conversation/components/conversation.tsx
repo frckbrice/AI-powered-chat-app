@@ -1,11 +1,11 @@
 import { formatDate } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { MessageSeenSvg } from "../ui/svgs";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
+import { MessageSeenSvg } from "../../../ui/svgs";
 import { ImageIcon, Users, VideoIcon } from "lucide-react";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { useConversationStore } from "@/store/chat-store";
-import { Conversation as ConversationType } from "../types";
+import { api } from "../../../../../convex/_generated/api";
+import { useConversationStore } from "../../../../store/chat-store";
+import { Conversation as ConversationType } from "../../../types";
 
 type ConversationProps = {
   _id: string;

@@ -1,5 +1,5 @@
-import { IMessage } from "../types";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { IMessage } from "../../../types";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
 
 type ChatBubbleAvatarProps = {
   message: IMessage;

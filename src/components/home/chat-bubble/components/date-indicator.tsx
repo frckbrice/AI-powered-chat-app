@@ -1,5 +1,5 @@
 import { getRelativeDateTime, isSameDay } from "@/lib/utils";
-import { IMessage } from "../types";
+import { IMessage } from "../../../types";
 
 type DateIndicatorProps = {
   message: IMessage;

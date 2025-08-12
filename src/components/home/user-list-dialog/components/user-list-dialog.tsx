@@ -10,14 +10,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../../ui/input";
+import { Button } from "../../../ui/button";
 import { ImageIcon, MessageSquareDiff } from "lucide-react";
-import { Id } from "../../../convex/_generated/dataModel";
+import { Id } from "../../../../../convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import { toast } from "sonner";
-import { useConversationStore } from "@/store/chat-store";
+import { useConversationStore } from "../../../../store/chat-store";
 
 const UserListDialog = () => {
   const [selectedUsers, setSelectedUsers] = useState<Id<"users">[]>([]);
@@ -40,7 +40,7 @@ const UserListDialog = () => {
     if (selectedUsers.length === 0 || !me?._id) return;
     setIsLoading(true);
     try {
-      const isGroup = selectedUsers.length > 1;
+      const isGroup = selectedUsers.length > 1; // create a group conversation
 
       let conversationId;
       if (!isGroup) {

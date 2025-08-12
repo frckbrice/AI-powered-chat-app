@@ -2,9 +2,9 @@ import { useConversationStore } from "@/store/chat-store";
 import { useMutation } from "convex/react";
 import { Ban, LogOut } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../../convex/_generated/api";
 import React from "react";
-import { IMessage, IUser } from "../types";
+import { IMessage, IUser } from "../../../types";
 
 type ChatAvatarActionsProps = {
   message: IMessage;

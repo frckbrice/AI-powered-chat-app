@@ -1,13 +1,13 @@
 "use client";
 import { Search, ListFilter } from "lucide-react";
-import { Input } from "../ui/input";
-import ModeToggle from "../providers/theme/theme-switcher";
+import { Input } from "../../../ui/input";
+import ModeToggle from "../../../providers/theme/theme-switcher";
 // import { conversations } from "@/dummy-data/db";
-import { api } from "../../../convex/_generated/api";
-import Conversation from "./conversation";
-import { ConversationType } from "../types";
+import { api } from "../../../../../convex/_generated/api";
+import { Conversation } from "../../conversation";
+import { ConversationType } from "../../../types";
 import { UserButton } from "@clerk/nextjs";
-import UserListDialog from "./user-list-dialog";
+import UserListDialog from "../../user-list-dialog";
 import { useState } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
 

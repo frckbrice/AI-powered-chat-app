@@ -16,7 +16,6 @@ const withPWA = withPWAFactory({
 });
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -64,10 +63,14 @@ const nextConfig: NextConfig = {
     const frameParts = ["'self'", ...(clerkEnabled ? clerkHosts : []), cfTurnstile];
     const imgParts = ["'self'", "data:", "https:", ...(clerkEnabled ? clerkHosts : [])];
     const fontParts = ["'self'", "https:", "data:"];
-    // Allow web workers created from blob: (Clerk may create a worker from a blob URL)
     const workerParts = ["'self'", "blob:"];
-    // Fallback for older browsers that rely on child-src instead of worker-src
     const childParts = ["'self'", "blob:"];
+    const mediaParts = [
+      "'self'",
+      "blob:",
+      "data:",
+      "https://mellow-poodle-790.convex.cloud", // ✅ Allow Convex storage media
+    ];
 
     const scriptSrc = scriptParts.join(" ");
     const connectSrc = connectParts.join(" ");
@@ -76,6 +79,7 @@ const nextConfig: NextConfig = {
     const fontSrc = fontParts.join(" ");
     const workerSrc = workerParts.join(" ");
     const childSrc = childParts.join(" ");
+    const mediaSrc = mediaParts.join(" ");
 
     return [
       {
@@ -98,6 +102,7 @@ const nextConfig: NextConfig = {
               `font-src ${fontSrc}`,
               `worker-src ${workerSrc}`,
               `child-src ${childSrc}`,
+              `media-src ${mediaSrc}`,
             ].join("; "),
           },
           {
