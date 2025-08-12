@@ -1,4 +1,4 @@
-# AI-Integrated WhatsApp Clone
+# AI-Integrated WhatsApp Clone (WIP--work in progress)
 
 A modern, feature-rich WhatsApp-like chat application built with Next.js, featuring AI chat integration, real-time messaging, and a beautiful, responsive UI.
 
