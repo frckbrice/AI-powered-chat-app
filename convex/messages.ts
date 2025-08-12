@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { api } from "./_generated/api";
 
 export const sendTextMessage = mutation({
   args: {
@@ -44,20 +45,20 @@ export const sendTextMessage = mutation({
     });
 
     // TODO => add @gpt check later
-    // if (args.content.startsWith("@gpt")) {
-    // 	// Schedule the chat action to run immediately
-    // 	await ctx.scheduler.runAfter(0, api.openai.chat, {
-    // 		messageBody: args.content,
-    // 		conversation: args.conversation,
-    // 	});
-    // }
+    if (args.content.startsWith("@gpt")) {
+    	// Schedule the chat action to run immediately
+    	await ctx.scheduler.runAfter(0, api.openai.chat, {
+    		messageBody: args.content,
+    		conversation: args.conversationId,
+    	});
+    }
 
-    // if (args.content.startsWith("@dall-e")) {
-    // 	await ctx.scheduler.runAfter(0, api.openai.dall_e, {
-    // 		messageBody: args.content,
-    // 		conversation: args.conversation,
-    // 	});
-    // }
+    if (args.content.startsWith("@dall-e")) {
+    	await ctx.scheduler.runAfter(0, api.openai.dall_e, {
+    		messageBody: args.content,
+    		conversation: args.conversationId,
+    	});
+    }
   },
 });
 

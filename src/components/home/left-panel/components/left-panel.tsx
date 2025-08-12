@@ -1,5 +1,5 @@
 "use client";
-import { Search, ListFilter } from "lucide-react";
+import { Search, ListFilter, Loader2 } from "lucide-react";
 import { Input } from "../../../ui/input";
 import ModeToggle from "../../../providers/theme/theme-switcher";
 // import { conversations } from "@/dummy-data/db";
@@ -8,22 +8,39 @@ import { Conversation } from "../../conversation";
 import { ConversationType } from "../../../types";
 import { UserButton } from "@clerk/nextjs";
 import UserListDialog from "../../user-list-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
+import { useConversationStore } from "@/store/chat-store";
 
 const LeftPanel = () => {
-  const { isAuthenticated } = useConvexAuth();
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { selectedConversation, setSelectedConversation } = useConversationStore();
   const conversations = useQuery(
     api.conversations.getMyConversations,
-    isAuthenticated ? undefined : "skip",
+    isAuthenticated ? undefined : "skip", 
   );
 
   const [searchQuery, setSearchQuery] = useState("");
+
+	useEffect(() => {
+		const conversationIds = conversations?.map((conversation) => conversation._id);
+
+		if (selectedConversation && conversationIds && !conversationIds.includes(selectedConversation._id)) {
+			setSelectedConversation(null);
+		}
+	}, [conversations, selectedConversation, setSelectedConversation]);
+
   const filteredConversations = conversations?.filter(
     (conv) =>
       conv.groupName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       conv.participants.some((p) => p.toLowerCase().includes(searchQuery.toLowerCase())),
   );
+
+  // create a loading state for the left panel
+  if (isLoading) return (<div className="flex flex-col  justify-center items-center h-full">
+    <Loader2 className="animate-spin" />
+  </div>);
+ 
 
   return (
     <div className="w-1/4 border-gray-600 border-r">

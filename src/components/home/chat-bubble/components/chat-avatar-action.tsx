@@ -46,8 +46,10 @@ const ChatAvatarActions = ({ me, message }: ChatAvatarActionsProps) => {
   };
 
   const handleCreateConversation = async () => {
-    if (fromAI) return;
-
+    if (fromAI) {
+      console.log("fromAI is not allowed to create conversation");
+      return;
+    }
     try {
       const conversationId = await createConversation({
         isGroup: false,
