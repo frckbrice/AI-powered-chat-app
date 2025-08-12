@@ -31,7 +31,17 @@ jobs:
           CI: true
 
       - name: Build
+        if: github.ref == 'refs/heads/main'
         run: yarn build
+        env:
+          NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN: ${{ secrets.NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET }}
+          CLERK_JWT_ISSUER_DOMAIN: ${{ secrets.CLERK_JWT_ISSUER_DOMAIN }}
+          CLERK_APP_DOMAIN: ${{ secrets.CLERK_APP_DOMAIN }}
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
 
   docker:
     needs: build-test
