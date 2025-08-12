@@ -76,7 +76,7 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
               <div
                 className={`inline-block max-w-full px-4 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 ${bgClass} transition-all duration-200 hover:shadow-md`}
               >
-                {<ChatAvatarActions message={message} me={me} />}
+                {isGroup && <ChatAvatarActions message={message} me={me} />}
                 {renderMessageContent()}
               </div>
 

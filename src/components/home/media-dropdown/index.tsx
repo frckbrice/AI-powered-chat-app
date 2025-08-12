@@ -1,1 +1,1 @@
-export { default as MediaDropdown } from "./components/media-dropdown";
+export { default } from "./components/media-dropdown";

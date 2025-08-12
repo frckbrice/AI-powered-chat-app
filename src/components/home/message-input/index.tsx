@@ -1,1 +1,1 @@
-export { default } from "./components/message-input";
+export { default as MessageInput } from "./components/message-input";

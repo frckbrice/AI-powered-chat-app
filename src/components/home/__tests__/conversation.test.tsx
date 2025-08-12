@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import Conversation from "../conversation";
+import { Conversation } from "../conversation";
 
 // Mock Convex hooks
 vi.mock("convex/react", () => ({

@@ -5,11 +5,10 @@ export { default as ChatBubble } from "./chat-bubble";
 export { default as MediaDropdown } from "./media-dropdown";
 
 // Message Input Feature
-export { default as MessageInput } from "./message-input";
+export { MessageInput } from "./message-input";
 
 // Conversation Feature
-export { default as Conversation } from "./conversation";
-export { default as ChatPlaceholder } from "./chat-placeholder";
+export { Conversation, ChatPlaceholder } from "./conversation";
 
 // Panel Features
 export { default as LeftPanel } from "./left-panel";

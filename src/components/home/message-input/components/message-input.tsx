@@ -5,7 +5,7 @@ import { Button } from "../../../ui/button";
 import { useConversationStore } from "../../../../store/chat-store";
 import { EmojiPickerComponent } from "./emoji-picker";
 import { useMessageAPI } from "../api/message-api";
-import { MediaDropdown } from "../../media-dropdown";
+import MediaDropdown from "../../media-dropdown";
 
 const MessageInput = () => {
   const [msgText, setMsgText] = useState("");
