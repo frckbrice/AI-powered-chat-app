@@ -80,16 +80,9 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
                 {renderMessageContent()}
               </div>
 
-              {/* Message Actions - Show on hover */}
-              <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <ChatAvatarActions message={message} me={me} />
-              </div>
               {/* Message Footer */}
               <div className="flex items-center justify-between px-1">
                 <MessageTime time={time} fromMe={fromMe} />
-                {fromAI && (
-                  <div className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</div>
-                )}
               </div>
             </div>
           </div>
@@ -112,11 +105,6 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
               className={`inline-block max-w-full px-4 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 ${bgClass} transition-all duration-200 hover:shadow-md`}
             >
               {renderMessageContent()}
-            </div>
-
-            {/* Message Actions - Show on hover */}
-            <div className="absolute -top-2 -left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <ChatAvatarActions message={message} me={me} />
             </div>
           </div>
 

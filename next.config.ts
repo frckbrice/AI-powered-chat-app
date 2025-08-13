@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "mellow-poodle-790.convex.cloud",
       },
+      {
+        protocol: "https",
+        hostname: "oaidalleapiprodscus.blob.core.windows.net",
+      },
     ],
   },
   headers: async () => {

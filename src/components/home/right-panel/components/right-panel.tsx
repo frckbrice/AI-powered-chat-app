@@ -1,6 +1,6 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../ui/avatar";
-import { Video, X } from "lucide-react";
+import { Loader2, Video, X } from "lucide-react";
 import { MessageInput } from "../../message-input";
 import MessageContainer from "../../message-container";
 import ChatPlaceHolder from "./chat-placeholder";
@@ -12,8 +12,14 @@ const RightPanel = () => {
   const { selectedConversation, setSelectedConversation } = useConversationStore();
   const { isLoading } = useConvexAuth();
 
-  if (isLoading) return null;
-  if (!selectedConversation) return <ChatPlaceHolder />;
+  // this should be a loading state for the right panel and center the loader
+  if (isLoading) 
+    return <div className="flex flex-col justify-center items-center h-full">
+  <Loader2 className="animate-spin" />
+ </div>;
+
+  if (!selectedConversation) 
+    return <ChatPlaceHolder />;
 
   const conversationName = selectedConversation.groupName || selectedConversation.name;
   const conversationImage = selectedConversation.groupImage || selectedConversation.image;
