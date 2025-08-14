@@ -1,11 +1,12 @@
 import { render } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import { OtherMessageIndicator, SelfMessageIndicator } from "../message-indicators";
 
 describe("MessageIndicators", () => {
   describe("OtherMessageIndicator", () => {
     it("renders with correct styling", () => {
       const { container } = render(<OtherMessageIndicator />);
-      
+
       const indicator = container.firstChild as HTMLElement;
       expect(indicator).toHaveClass(
         "absolute",
@@ -15,13 +16,13 @@ describe("MessageIndicators", () => {
         "-left-[4px]",
         "w-3",
         "h-3",
-        "rounded-bl-full"
+        "rounded-bl-full",
       );
     });
 
     it("renders as a div element", () => {
       const { container } = render(<OtherMessageIndicator />);
-      
+
       const indicator = container.firstChild as HTMLElement;
       expect(indicator.tagName).toBe("DIV");
     });
@@ -30,7 +31,7 @@ describe("MessageIndicators", () => {
   describe("SelfMessageIndicator", () => {
     it("renders with correct styling", () => {
       const { container } = render(<SelfMessageIndicator />);
-      
+
       const indicator = container.firstChild as HTMLElement;
       expect(indicator).toHaveClass(
         "absolute",
@@ -40,13 +41,13 @@ describe("MessageIndicators", () => {
         "w-3",
         "h-3",
         "rounded-br-full",
-        "overflow-hidden"
+        "overflow-hidden",
       );
     });
 
     it("renders as a div element", () => {
       const { container } = render(<SelfMessageIndicator />);
-      
+
       const indicator = container.firstChild as HTMLElement;
       expect(indicator.tagName).toBe("DIV");
     });

@@ -219,6 +219,7 @@ export const VideoMessage = ({ message }: VideoMessageProps) => {
   return (
     <div className="w-[350px] h-[250px] relative bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
       <video
+        data-testid="video-element"
         src={videoBlob || message.content}
         width="100%"
         height="100%"

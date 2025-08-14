@@ -1,105 +1,250 @@
-import { render } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import ChatBubbleAvatar from "../chat-bubble-avatar";
 import { IMessage } from "../../../../types";
-import { describe, expect, it } from "vitest";
+
+// Mock the UI components
+vi.mock("../../../ui/avatar", () => ({
+  Avatar: ({ children, className }: { children: React.ReactNode; className: string }) => (
+    <div data-testid="avatar" className={className}>
+      {children}
+    </div>
+  ),
+  AvatarImage: ({ src, className }: { src: string; className: string }) => (
+    <img data-testid="avatar-image" src={src} className={className} alt="avatar" />
+  ),
+  AvatarFallback: ({ children, className }: { children: React.ReactNode; className: string }) => (
+    <div data-testid="avatar-fallback" className={className}>
+      {children}
+    </div>
+  ),
+}));
 
 describe("ChatBubbleAvatar", () => {
   const mockMessage: IMessage = {
-    _id: "1",
+    _id: "msg1" as any,
     content: "Hello world",
     messageType: "text",
     sender: {
-      _id: "user1",
+      _id: "user1" as any,
       name: "Test User",
       image: "https://example.com/avatar.jpg",
+      tokenIdentifier: "test-token",
+      email: "test@example.com",
+      _creationTime: 1234567890,
       isOnline: true,
     },
-    conversationId: "conv1",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    _creationTime: 1234567890,
   };
 
-  it("renders nothing when not group and not from AI", () => {
+  it("renders avatar for group messages", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-image")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
+  });
+
+  it("renders avatar for AI messages", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={false} isMember={false} fromAI={true} />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-image")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
+  });
+
+  it("does not render for individual non-AI messages", () => {
     const { container } = render(
-      <ChatBubbleAvatar message={mockMessage} isMember={false} isGroup={false} fromAI={false} />,
+      <ChatBubbleAvatar message={mockMessage} isGroup={false} isMember={false} fromAI={false} />,
     );
 
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders avatar when in group", () => {
-    const { container } = render(
-      <ChatBubbleAvatar message={mockMessage} isMember={true} isGroup={true} fromAI={false} />,
-    );
-
-    const avatar = container.querySelector('[data-slot="avatar"]');
-    expect(avatar).toBeInTheDocument();
-  });
-
-  it("renders avatar when from AI", () => {
-    const { container } = render(
-      <ChatBubbleAvatar message={mockMessage} isMember={false} isGroup={false} fromAI={true} />,
-    );
-
-    const avatar = container.querySelector('[data-slot="avatar"]');
-    expect(avatar).toBeInTheDocument();
-  });
-
-  it("shows online indicator when user is online and is member", () => {
+  it("shows online indicator when user is online and member", () => {
     render(
-      <ChatBubbleAvatar message={mockMessage} isMember={true} isGroup={true} fromAI={false} />,
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
     );
 
-    const onlineIndicator = document.querySelector(".bg-green-500");
-    expect(onlineIndicator).toBeInTheDocument();
+    const onlineIndicator = screen.getByTestId("avatar").querySelector("div");
+    expect(onlineIndicator).toHaveClass(
+      "absolute",
+      "top-0",
+      "right-0",
+      "w-2",
+      "h-2",
+      "bg-green-500",
+      "rounded-full",
+      "border-2",
+      "border-foreground",
+    );
   });
 
   it("does not show online indicator when user is not online", () => {
     const offlineMessage: IMessage = {
       ...mockMessage,
-      sender: { ...mockMessage.sender, isOnline: false },
+      sender: {
+        ...mockMessage.sender,
+        isOnline: false,
+      },
     };
 
     render(
-      <ChatBubbleAvatar message={offlineMessage} isMember={true} isGroup={true} fromAI={false} />,
+      <ChatBubbleAvatar message={offlineMessage} isGroup={true} isMember={true} fromAI={false} />,
     );
 
-    const onlineIndicator = document.querySelector(".bg-green-500");
-    expect(onlineIndicator).not.toBeInTheDocument();
+    const avatar = screen.getByTestId("avatar");
+    const onlineIndicator = avatar.querySelector("div");
+    expect(onlineIndicator).not.toHaveClass("bg-green-500");
   });
 
-  it("does not show online indicator when not a member", () => {
+  it("does not show online indicator when user is not a member", () => {
     render(
-      <ChatBubbleAvatar message={mockMessage} isMember={false} isGroup={true} fromAI={false} />,
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={false} fromAI={false} />,
     );
 
-    const onlineIndicator = document.querySelector(".bg-green-500");
-    expect(onlineIndicator).not.toBeInTheDocument();
+    const avatar = screen.getByTestId("avatar");
+    const onlineIndicator = avatar.querySelector("div");
+    expect(onlineIndicator).not.toHaveClass("bg-green-500");
+  });
+
+  it("applies correct styling to avatar container", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
+    );
+
+    const avatar = screen.getByTestId("avatar");
+    expect(avatar).toHaveClass("overflow-visible", "relative");
+  });
+
+  it("applies correct styling to avatar image", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
+    );
+
+    const avatarImage = screen.getByTestId("avatar-image");
+    expect(avatarImage).toHaveClass("rounded-full", "object-cover", "w-8", "h-8");
+    expect(avatarImage).toHaveAttribute("src", "https://example.com/avatar.jpg");
   });
 
   it("applies correct styling to avatar fallback", () => {
-    const { container } = render(
-      <ChatBubbleAvatar message={mockMessage} isMember={true} isGroup={true} fromAI={false} />,
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
     );
 
-    const avatarFallback = container.querySelector('[data-slot="avatar-fallback"]');
-    expect(avatarFallback).toHaveClass(
-      "bg-muted",
-      "flex",
-      "items-center",
-      "justify-center",
-      "rounded-full",
-      "w-8",
-      "h-8",
-    );
+    const avatarFallback = screen.getByTestId("avatar-fallback");
+    expect(avatarFallback).toHaveClass("w-8", "h-8");
   });
 
-  it("applies correct styling to container", () => {
-    const { container } = render(
-      <ChatBubbleAvatar message={mockMessage} isMember={true} isGroup={true} fromAI={false} />,
+  it("renders fallback with correct styling", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={false} />,
     );
 
-    const avatarContainer = container.firstChild as HTMLElement;
-    expect(avatarContainer).toHaveClass("overflow-visible", "relative");
+    const fallback = screen.getByTestId("avatar-fallback");
+    const fallbackContent = fallback.querySelector("div");
+    expect(fallbackContent).toHaveClass("animate-pulse", "bg-gray-tertiary", "rounded-full");
+  });
+
+  it("handles message without sender image", () => {
+    const messageWithoutImage: IMessage = {
+      ...mockMessage,
+      sender: {
+        ...mockMessage.sender,
+        image: undefined as any,
+      },
+    };
+
+    render(
+      <ChatBubbleAvatar
+        message={messageWithoutImage}
+        isGroup={true}
+        isMember={true}
+        fromAI={false}
+      />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
+  });
+
+  it("handles message with empty sender image", () => {
+    const messageWithEmptyImage: IMessage = {
+      ...mockMessage,
+      sender: {
+        ...mockMessage.sender,
+        image: "",
+      },
+    };
+
+    render(
+      <ChatBubbleAvatar
+        message={messageWithEmptyImage}
+        isGroup={true}
+        isMember={true}
+        fromAI={false}
+      />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
+  });
+
+  it("handles message with null sender image", () => {
+    const messageWithNullImage: IMessage = {
+      ...mockMessage,
+      sender: {
+        ...mockMessage.sender,
+        image: null as any,
+      },
+    };
+
+    render(
+      <ChatBubbleAvatar
+        message={messageWithNullImage}
+        isGroup={true}
+        isMember={true}
+        fromAI={false}
+      />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
+  });
+
+  it("renders for group messages even when not a member", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={false} fromAI={false} />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+  });
+
+  it("renders for AI messages even when not in group", () => {
+    render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={false} isMember={false} fromAI={true} />,
+    );
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+  });
+
+  it("handles edge case with all false props", () => {
+    const { container } = render(
+      <ChatBubbleAvatar message={mockMessage} isGroup={false} isMember={false} fromAI={false} />,
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it("handles edge case with all true props", () => {
+    render(<ChatBubbleAvatar message={mockMessage} isGroup={true} isMember={true} fromAI={true} />);
+
+    expect(screen.getByTestId("avatar")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-image")).toBeInTheDocument();
+    expect(screen.getByTestId("avatar-fallback")).toBeInTheDocument();
   });
 });

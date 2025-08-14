@@ -72,6 +72,7 @@ const ChatAvatarActions = ({ me, message }: ChatAvatarActionsProps) => {
 
   return (
     <div
+      data-testid="chat-avatar-actions"
       className="text-[11px] flex gap-4 justify-between font-bold cursor-pointer group"
       onClick={handleCreateConversation}
     >

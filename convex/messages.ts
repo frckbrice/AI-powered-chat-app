@@ -46,18 +46,42 @@ export const sendTextMessage = mutation({
 
     // TODO => add @gpt check later
     if (args.content.startsWith("@gpt")) {
-    	// Schedule the chat action to run immediately
-    	await ctx.scheduler.runAfter(0, api.openai.chat, {
-    		messageBody: args.content,
-    		conversation: args.conversationId,
-    	});
+      try {
+        // Schedule the chat action to run immediately
+        await ctx.scheduler.runAfter(0, api.openai.chat, {
+          messageBody: args.content,
+          conversation: args.conversationId,
+        });
+      } catch (error) {
+        console.error("Failed to schedule OpenAI chat action:", error);
+        // Send fallback message to user
+        await ctx.db.insert("messages", {
+          sender: "ChatGPT",
+          content:
+            "Sorry, I'm having trouble processing your request right now. Please try again later.",
+          messageType: "text",
+          conversation: args.conversationId,
+        });
+      }
     }
 
     if (args.content.startsWith("@dall-e")) {
-    	await ctx.scheduler.runAfter(0, api.openai.dall_e, {
-    		messageBody: args.content,
-    		conversation: args.conversationId,
-    	});
+      try {
+        await ctx.scheduler.runAfter(0, api.openai.dall_e, {
+          messageBody: args.content,
+          conversation: args.conversationId,
+        });
+      } catch (error) {
+        console.error("Failed to schedule DALL-E action:", error);
+        // Send fallback message to user
+        await ctx.db.insert("messages", {
+          sender: "ChatGPT",
+          content:
+            "Sorry, I'm having trouble generating your image right now. Please try again later.",
+          messageType: "text",
+          conversation: args.conversationId,
+        });
+      }
     }
   },
 });

@@ -13,13 +13,22 @@ const RightPanel = () => {
   const { isLoading } = useConvexAuth();
 
   // this should be a loading state for the right panel and center the loader
-  if (isLoading) 
-    return <div className="flex flex-col justify-center items-center h-full">
-  <Loader2 className="animate-spin" />
- </div>;
+  if (isLoading)
+    return (
+      <div className="w-3/4 flex flex-col justify-center items-center h-full">
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="Loading"
+          data-testid="loader"
+          className="flex flex-col justify-center items-center"
+        >
+          <Loader2 className="animate-spin" />
+        </div>
+      </div>
+    );
 
-  if (!selectedConversation) 
-    return <ChatPlaceHolder />;
+  if (!selectedConversation) return <ChatPlaceHolder />;
 
   const conversationName = selectedConversation.groupName || selectedConversation.name;
   const conversationImage = selectedConversation.groupImage || selectedConversation.image;
