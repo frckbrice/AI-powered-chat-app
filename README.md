@@ -9,7 +9,7 @@ A modern, feature-rich WhatsApp-like chat application built with Next.js, featur
 - **Next.js 15** (App Router) + React 19
 - **TypeScript** for type safety
 - **Tailwind CSS 3** for styling
-- **Radix UI** for accessible components
+- **shadcn + Radix UI** for accessible components
 - **Lucide React** for beautiful icons
 
 ### **Backend & Database**
@@ -23,7 +23,7 @@ A modern, feature-rich WhatsApp-like chat application built with Next.js, featur
 
 - **Yarn** package manager
 - **Vitest + Testing Library** for testing
-- **ESLint** for code quality
+- **ESLint + prettier** for code quality
 - **Docker** for containerization
 
 ## 🏗️ Architecture
@@ -227,28 +227,12 @@ Message Creation → Real-time Delivery → Context Preservation
 - **Bundle Analysis**: Webpack bundle optimization
 - **PWA Support**: Offline capabilities
 
-#### **Backend Optimization**
+#### **Backend Optimization made by convex.dev**
 
 - **Real-time Queries**: Efficient data subscriptions
 - **Indexing**: Optimized database queries
 - **Caching**: Strategic data caching
 - **CDN Integration**: Global content delivery
-
-### **Scalability Considerations**
-
-#### **Horizontal Scaling**
-
-- **Stateless Design**: Easy horizontal scaling
-- **Database Sharding**: Partitioned data storage
-- **Load Balancing**: Distributed request handling
-- **Microservices Ready**: Modular architecture
-
-#### **Vertical Scaling**
-
-- **Resource Optimization**: Efficient resource usage
-- **Memory Management**: Optimized memory allocation
-- **CPU Optimization**: Efficient processing algorithms
-- **Storage Optimization**: Compressed data storage
 
 ### **Development Architecture**
 
@@ -264,7 +248,6 @@ Message Creation → Real-time Delivery → Context Preservation
 - **Multi-stage Docker**: Optimized container builds
 - **CI/CD Pipeline**: Automated testing and deployment
 - **Environment Management**: Configurable deployments
-- **Monitoring & Logging**: Production observability
 
 ### **Integration Points**
 
@@ -278,15 +261,14 @@ Message Creation → Real-time Delivery → Context Preservation
 #### **API Design**
 
 - **RESTful Endpoints**: Standard HTTP methods
-- **GraphQL Ready**: Query-based data fetching
-- **WebSocket Support**: Real-time communication
-- **Webhook Integration**: Event-driven architecture
+- **WebSocket Support**: Real-time communication (convex)
+- **Webhook Integration**: Event-driven architecture (convex)
 
 ## 🚀 Getting Started
 
 ### **Prerequisites**
 
-- Node.js 18+
+- Node.js 22+
 - Yarn package manager
 - Convex account (for backend)
 - Clerk account (for authentication)
@@ -321,7 +303,7 @@ Message Creation → Real-time Delivery → Context Preservation
 
 5. **Visit** `http://localhost:3000`
 
-## 📱 Usage
+## Usage
 
 ### **Starting a Chat**
 
@@ -329,6 +311,8 @@ Message Creation → Real-time Delivery → Context Preservation
 2. Type your message in the input field
 3. Send text, images, or videos
 4. Use AI chat by selecting ChatGPT from the conversation list
+5. Send message to chatgpt by starting the text message by @gpt you-kind-message
+6. start video call or make a group call by clicking the camera icon at the top right and invite members.
 
 ### **AI Features**
 
