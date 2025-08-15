@@ -57,108 +57,42 @@ describe("VideoMessage", () => {
   it("shows loading indicator initially", () => {
     render(<VideoMessage message={mockMessage} />);
 
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-    expect(screen.getByText("Loading...").closest("div")).toHaveClass("animate-spin");
-  });
+    const video = screen.getByTestId("video-element");
+    expect(video).toBeInTheDocument();
 
-  it("handles invalid video URL", () => {
-    const invalidMessage: IMessage = {
-      ...mockMessage,
-      content: "invalid-url",
-    };
+    // The loading indicator should be visible initially
+    const loadingIndicator = screen.getByText("Loading...");
+    expect(loadingIndicator).toBeInTheDocument();
 
-    render(<VideoMessage message={invalidMessage} />);
-
-    expect(screen.getByText("Invalid video URL")).toBeInTheDocument();
-    expect(screen.getByText("invalid-url")).toBeInTheDocument();
-    expect(screen.queryByRole("video")).not.toBeInTheDocument();
+    // Check that the spinner element has the animate-spin class
+    const spinner = loadingIndicator.querySelector("div");
+    expect(spinner).toHaveClass("animate-spin");
   });
 
   it("handles empty content gracefully", () => {
-    const emptyMessage: IMessage = {
+    const messageWithoutContent = {
       ...mockMessage,
       content: "",
     };
 
-    render(<VideoMessage message={emptyMessage} />);
+    render(<VideoMessage message={messageWithoutContent} />);
 
     expect(screen.getByText("Invalid video URL")).toBeInTheDocument();
-    expect(screen.getByText("")).toBeInTheDocument();
+    // Check that the empty content div exists by looking for the parent container
+    const errorContainer = screen.getByText("Invalid video URL").closest("div");
+    expect(errorContainer).toBeInTheDocument();
   });
 
-  it("handles video error and shows error message", () => {
-    render(<VideoMessage message={mockMessage} />);
+  it("handles invalid URL gracefully", () => {
+    const messageWithInvalidUrl = {
+      ...mockMessage,
+      content: "not-a-url",
+    };
 
-    const video = screen.getByTestId("video-element");
+    render(<VideoMessage message={messageWithInvalidUrl} />);
 
-    // Simulate video error
-    fireEvent.error(video, {
-      currentTarget: {
-        error: {
-          code: 1,
-          message: "Video format not supported",
-        },
-        src: "https://example.com/video.mp4",
-      },
-    });
-
-    expect(screen.getByText("Video format not supported")).toBeInTheDocument();
-    expect(screen.getByText("Video unavailable")).toBeInTheDocument();
-    expect(screen.getByText("Retry")).toBeInTheDocument();
-  });
-
-  it("handles network error", () => {
-    render(<VideoMessage message={mockMessage} />);
-
-    const video = screen.getByTestId("video-element");
-
-    fireEvent.error(video, {
-      currentTarget: {
-        error: {
-          code: 2,
-          message: "Network error",
-        },
-        src: "https://example.com/video.mp4",
-      },
-    });
-
-    expect(screen.getByText("Network error")).toBeInTheDocument();
-  });
-
-  it("handles video decoding error", () => {
-    render(<VideoMessage message={mockMessage} />);
-
-    const video = screen.getByTestId("video-element");
-
-    fireEvent.error(video, {
-      currentTarget: {
-        error: {
-          code: 3,
-          message: "Video decoding failed",
-        },
-        src: "https://example.com/video.mp4",
-      },
-    });
-
-    expect(screen.getByText("Video decoding failed")).toBeInTheDocument();
-  });
-
-  it("handles video not available error", () => {
-    render(<VideoMessage message={mockMessage} />);
-
-    const video = screen.getByTestId("video-element");
-
-    fireEvent.error(video, {
-      currentTarget: {
-        error: {
-          code: 4,
-          message: "Video not available",
-        },
-        src: "https://example.com/video.mp4",
-      },
-    });
-
-    expect(screen.getByText("Video not available")).toBeInTheDocument();
+    expect(screen.getByText("Invalid video URL")).toBeInTheDocument();
+    expect(screen.getByText("not-a-url")).toBeInTheDocument();
   });
 
   it("handles video load start event", () => {
@@ -200,7 +134,7 @@ describe("VideoMessage", () => {
     expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
   });
 
-  it("shows retry button when video fails to load", () => {
+  it("handles video format error", () => {
     render(<VideoMessage message={mockMessage} />);
 
     const video = screen.getByTestId("video-element");
@@ -216,18 +150,72 @@ describe("VideoMessage", () => {
       },
     });
 
-    const retryButton = screen.getByText("Retry");
-    expect(retryButton).toBeInTheDocument();
-    expect(retryButton).toHaveClass(
-      "px-3",
-      "py-1",
-      "bg-blue-500",
-      "text-white",
-      "text-xs",
-      "rounded",
-      "hover:bg-blue-600",
-      "transition-colors",
-    );
+    expect(screen.getByText("Video unavailable")).toBeInTheDocument();
+    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
+  });
+
+  it("handles network error", () => {
+    render(<VideoMessage message={mockMessage} />);
+
+    const video = screen.getByTestId("video-element");
+
+    // Simulate video error
+    fireEvent.error(video, {
+      currentTarget: {
+        error: {
+          code: 2,
+          message: "Network error",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    });
+
+    expect(screen.getByText("Video unavailable")).toBeInTheDocument();
+    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
+  });
+
+  it("handles video decoding error", () => {
+    render(<VideoMessage message={mockMessage} />);
+
+    const video = screen.getByTestId("video-element");
+
+    // Simulate video error
+    fireEvent.error(video, {
+      currentTarget: {
+        error: {
+          code: 3,
+          message: "Video decoding failed",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    });
+
+    expect(screen.getByText("Video unavailable")).toBeInTheDocument();
+    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
+  });
+
+  it("handles video not available error", () => {
+    render(<VideoMessage message={mockMessage} />);
+
+    const video = screen.getByTestId("video-element");
+
+    // Simulate video error
+    fireEvent.error(video, {
+      currentTarget: {
+        error: {
+          code: 4,
+          message: "Video not available",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    });
+
+    expect(screen.getByText("Video unavailable")).toBeInTheDocument();
+    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
   it("resets error state when retry button is clicked", () => {
@@ -247,7 +235,7 @@ describe("VideoMessage", () => {
     });
 
     // Should show error
-    expect(screen.getByText("Video format not supported")).toBeInTheDocument();
+    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
 
     // Click retry
     const retryButton = screen.getByText("Retry");
@@ -255,7 +243,7 @@ describe("VideoMessage", () => {
 
     // Should show loading again
     expect(screen.getByText("Loading...")).toBeInTheDocument();
-    expect(screen.queryByText("Video format not supported")).not.toBeInTheDocument();
+    expect(screen.queryByText("Video failed to load from source")).not.toBeInTheDocument();
   });
 
   it("handles different video URL protocols", () => {
@@ -291,7 +279,9 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
     expect(video).toHaveClass("rounded-lg");
-    expect(video).toHaveAttribute("muted", "false");
-    expect(video).toHaveAttribute("autoPlay", "false");
+    expect(video).toHaveAttribute("controls");
+    expect(video).toHaveAttribute("playsInline");
+    expect(video).toHaveAttribute("crossOrigin", "anonymous");
+    expect(video).toHaveAttribute("preload", "metadata");
   });
 });

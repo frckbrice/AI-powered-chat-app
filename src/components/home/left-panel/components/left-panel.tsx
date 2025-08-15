@@ -41,12 +41,12 @@ const LeftPanel = () => {
   );
 
   // create a loading state for the left panel
-  if (isLoading)
-    return (
-      <div data-testid="loader" className="flex flex-col  justify-center items-center h-full">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div data-testid="loader" className="flex flex-col  justify-center items-center h-full">
+  //       <Loader2 className="animate-spin" />
+  //     </div>
+  //   );
 
   return (
     <div className="w-1/4 border-gray-600 border-r">

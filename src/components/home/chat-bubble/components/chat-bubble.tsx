@@ -46,16 +46,16 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
     return (
       <>
         <DateIndicator message={message} previousMessage={previousMessage} />
-        <div className="flex gap-3 w-full max-w-4xl">
+        <div className="flex gap-3 w-full">
           <ChatBubbleAvatar
             isGroup={isGroup}
             isMember={isMember}
             message={message}
             fromAI={fromAI}
           />
-          <div className="flex flex-col flex-1 max-w-2xl">
+          <div className="flex flex-col flex-1 min-w-0">
             {/* Message Header */}
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-2">
               {!fromAI && (
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {message.sender?.name || "Unknown User"}
@@ -72,16 +72,16 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
             </div>
 
             {/* Message Content */}
-            <div className="relative group mb-2">
+            <div className="relative group mb-3">
               <div
-                className={`inline-block max-w-full px-4 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 ${bgClass} transition-all duration-200 hover:shadow-md`}
+                className={`inline-block max-w-[280px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px] px-4 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 ${bgClass} transition-all duration-200 hover:shadow-md`}
               >
                 {isGroup && <ChatAvatarActions message={message} me={me} />}
                 {renderMessageContent()}
               </div>
 
               {/* Message Footer */}
-              <div className="flex items-center justify-between px-1">
+              <div className="flex items-center justify-between px-1 mt-1">
                 <MessageTime time={time} fromMe={fromMe} />
               </div>
             </div>
@@ -97,10 +97,10 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
   return (
     <>
       <DateIndicator message={message} previousMessage={previousMessage} />
-      <div className="flex justify-end w-full max-w-4xl">
-        <div className="flex flex-col items-end max-w-2xl">
+      <div className="flex justify-end w-full">
+        <div className="flex flex-col items-end max-w-[280px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px]">
           {/* Message Content */}
-          <div className="relative group mb-2">
+          <div className="relative group mb-3">
             <div
               className={`inline-block max-w-full px-4 py-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 ${bgClass} transition-all duration-200 hover:shadow-md`}
             >
