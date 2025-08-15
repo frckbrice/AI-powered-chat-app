@@ -14,8 +14,8 @@ export const MessageTime = ({ time, fromMe }: MessageTimeProps) => {
     >
       <span className="font-medium">{time}</span>
       {fromMe && (
-        <div className="flex items-center">
-          <MessageSeenSvg />
+        <div data-testid="message-seen-container" className="flex items-center">
+          <MessageSeenSvg data-testid="message-seen-svg" />
         </div>
       )}
     </div>

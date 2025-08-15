@@ -45,6 +45,7 @@ const MessageInput = () => {
         <div className="mr-4 flex items-center gap-3">
           {msgText.length > 0 ? (
             <Button
+              data-testid="send-button"
               type="submit"
               size={"sm"}
               className="bg-transparent text-foreground hover:bg-transparent"
@@ -53,6 +54,7 @@ const MessageInput = () => {
             </Button>
           ) : (
             <Button
+              data-testid="mic-button"
               type="submit"
               size={"sm"}
               className="bg-transparent text-foreground hover:bg-transparent"

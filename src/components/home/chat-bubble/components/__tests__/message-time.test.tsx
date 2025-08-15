@@ -47,8 +47,7 @@ describe("MessageTime", () => {
     render(<MessageTime time={mockTime} fromMe={true} />);
 
     // The MessageSeenSvg should be rendered
-    const seenIndicator =
-      document.querySelector('[data-testid="message-seen-svg"]') || document.querySelector("svg");
+    const seenIndicator = screen.getByTestId("message-seen-svg");
     expect(seenIndicator).toBeInTheDocument();
   });
 
@@ -56,8 +55,7 @@ describe("MessageTime", () => {
     render(<MessageTime time={mockTime} fromMe={false} />);
 
     // The MessageSeenSvg should not be rendered
-    const seenIndicator =
-      document.querySelector('[data-testid="message-seen-svg"]') || document.querySelector("svg");
+    const seenIndicator = screen.queryByTestId("message-seen-svg");
     expect(seenIndicator).not.toBeInTheDocument();
   });
 

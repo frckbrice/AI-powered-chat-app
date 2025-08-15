@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription } from "../../../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../../../ui/dialog";
 import Image from "next/image";
 
 interface ImageDialogProps {
@@ -16,6 +16,7 @@ export const ImageDialog = ({ src, open, onClose }: ImageDialogProps) => {
       }}
     >
       <DialogContent className="min-w-[750px]">
+        <DialogTitle className="sr-only">Image Preview</DialogTitle>
         <DialogDescription className="relative h-[450px] flex justify-center">
           <Image src={src} fill className="rounded-lg object-contain" alt="image" />
         </DialogDescription>

@@ -9,7 +9,7 @@ export const TextMessage = ({ message }: TextMessageProps) => {
   const isLink = /^(ftp|http|https):\/\/[^ "]+$/.test(message.content);
 
   return (
-    <div>
+    <div data-testid="text-message">
       {isLink ? (
         <Link
           href={message.content}

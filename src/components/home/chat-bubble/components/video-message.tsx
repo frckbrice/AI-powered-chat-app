@@ -28,12 +28,11 @@ export const VideoMessage = ({ message }: VideoMessageProps) => {
         if (message.content.includes("convex.cloud/api/storage")) {
           console.log("Attempting to load Convex storage video:", message.content);
 
-          // First, try to load directly (this might work in some browsers)
-          setIsLoading(false);
+          // Keep loading true initially, let the video element handle the loading state
           // Don't set videoBlob initially, let the video element try the direct URL
         } else {
-          // For other URLs, just set loading to false
-          setIsLoading(false);
+          // For other URLs, keep loading true initially
+          // The loading will be hidden when video events fire
         }
       } catch (error) {
         console.error("Error in video loading logic:", error);
@@ -219,6 +218,7 @@ export const VideoMessage = ({ message }: VideoMessageProps) => {
   return (
     <div className="w-[350px] h-[250px] relative bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
       <video
+        data-testid="video-element"
         src={videoBlob || message.content}
         width="100%"
         height="100%"

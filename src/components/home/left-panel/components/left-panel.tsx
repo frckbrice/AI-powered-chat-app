@@ -17,18 +17,22 @@ const LeftPanel = () => {
   const { selectedConversation, setSelectedConversation } = useConversationStore();
   const conversations = useQuery(
     api.conversations.getMyConversations,
-    isAuthenticated ? undefined : "skip", 
+    isAuthenticated ? undefined : "skip",
   );
 
   const [searchQuery, setSearchQuery] = useState("");
 
-	useEffect(() => {
-		const conversationIds = conversations?.map((conversation) => conversation._id);
+  useEffect(() => {
+    const conversationIds = conversations?.map((conversation) => conversation._id);
 
-		if (selectedConversation && conversationIds && !conversationIds.includes(selectedConversation._id)) {
-			setSelectedConversation(null);
-		}
-	}, [conversations, selectedConversation, setSelectedConversation]);
+    if (
+      selectedConversation &&
+      conversationIds &&
+      !conversationIds.includes(selectedConversation._id)
+    ) {
+      setSelectedConversation(null);
+    }
+  }, [conversations, selectedConversation, setSelectedConversation]);
 
   const filteredConversations = conversations?.filter(
     (conv) =>
@@ -37,10 +41,12 @@ const LeftPanel = () => {
   );
 
   // create a loading state for the left panel
-  if (isLoading) return (<div className="flex flex-col  justify-center items-center h-full">
-    <Loader2 className="animate-spin" />
-  </div>);
- 
+  // if (isLoading)
+  //   return (
+  //     <div data-testid="loader" className="flex flex-col  justify-center items-center h-full">
+  //       <Loader2 className="animate-spin" />
+  //     </div>
+  //   );
 
   return (
     <div className="w-1/4 border-gray-600 border-r">
@@ -76,7 +82,7 @@ const LeftPanel = () => {
               className="pl-10 py-2 text-sm w-full rounded shadow-sm bg-gray-primary focus-visible:ring-transparent"
             />
           </div>
-          <ListFilter className="cursor-pointer" />
+          <ListFilter data-testid="filter-icon" className="cursor-pointer" />
         </div>
       </div>
 

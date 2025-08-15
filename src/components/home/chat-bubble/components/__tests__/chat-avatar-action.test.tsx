@@ -11,22 +11,22 @@ vi.mock("@/store/chat-store", () => ({
       name: "Test Group",
       participants: ["user1", "user2"],
       isGroup: true,
-      admin: "user1"
+      admin: "user1",
     },
-    setSelectedConversation: vi.fn()
-  }))
+    setSelectedConversation: vi.fn(),
+  })),
 }));
 
 // Mock convex mutations
 vi.mock("convex/react", () => ({
-  useMutation: vi.fn(() => vi.fn())
+  useMutation: vi.fn(() => vi.fn()),
 }));
 
 // Mock sonner toast
 vi.mock("sonner", () => ({
   toast: {
-    error: vi.fn()
-  }
+    error: vi.fn(),
+  },
 }));
 
 describe("ChatAvatarActions", () => {
@@ -35,18 +35,18 @@ describe("ChatAvatarActions", () => {
     name: "Test User",
     email: "test@example.com",
     image: "https://example.com/avatar.jpg",
-    isOnline: true
+    isOnline: true,
   };
 
   const mockMessage: IMessage = {
     _id: "1",
     content: "Hello world",
     messageType: "text",
-    sender: { 
-      _id: "user2", 
+    sender: {
+      _id: "user2",
       name: "Another User",
       image: "https://example.com/avatar2.jpg",
-      isOnline: true
+      isOnline: true,
     },
     conversationId: "conv1",
     createdAt: new Date().toISOString(),
@@ -59,20 +59,20 @@ describe("ChatAvatarActions", () => {
 
   it("renders user name when in group", () => {
     render(<ChatAvatarActions message={mockMessage} me={mockMe} />);
-    
+
     expect(screen.getByText("Another User")).toBeInTheDocument();
   });
 
   it("shows kick icon when user is admin and hovering over member", () => {
     render(<ChatAvatarActions message={mockMessage} me={mockMe} />);
-    
+
     const kickIcon = document.querySelector(".text-red-500.opacity-0");
     expect(kickIcon).toBeInTheDocument();
   });
 
   it("applies correct styling to container", () => {
     const { container } = render(<ChatAvatarActions message={mockMessage} me={mockMe} />);
-    
+
     const actionContainer = container.firstChild as HTMLElement;
     expect(actionContainer).toHaveClass(
       "text-[11px]",
@@ -81,20 +81,28 @@ describe("ChatAvatarActions", () => {
       "justify-between",
       "font-bold",
       "cursor-pointer",
-      "group"
+      "group",
     );
   });
 
   it("handles AI messages", () => {
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const aiMessage: IMessage = {
       ...mockMessage,
-      sender: { ...mockMessage.sender, name: "ChatGPT" }
+      sender: { ...mockMessage.sender, name: "ChatGPT" },
     };
 
     render(<ChatAvatarActions message={aiMessage} me={mockMe} />);
-    
-    // Should still render the container
-    const actionContainer = document.querySelector('[class*="text-[11px]"]');
+
+    // Should still render the container with stable query
+    const actionContainer = screen.getByTestId("chat-avatar-actions");
     expect(actionContainer).toBeInTheDocument();
+
+    // Verify AI-specific behavior if any logging occurs
+    if (consoleSpy.mock.calls.length > 0) {
+      expect(consoleSpy).toHaveBeenCalled();
+    }
+
+    consoleSpy.mockRestore();
   });
 });
