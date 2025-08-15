@@ -32,11 +32,11 @@ define(["./workbox-f1770938"], function (e) {
     e.precacheAndRoute(
       [
         {
-          url: "/_next/static/IJD6FpI-SxH3N1jSUK2rv/_buildManifest.js",
+          url: "/_next/static/A0b0RdIrg_4tWEv6hVREF/_buildManifest.js",
           revision: "0d5ea34e709a928267b1f0b7b0025e53",
         },
         {
-          url: "/_next/static/IJD6FpI-SxH3N1jSUK2rv/_ssgManifest.js",
+          url: "/_next/static/A0b0RdIrg_4tWEv6hVREF/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/_next/static/chunks/0e5ce63c-b05c8543eecd5f73.js", revision: "b05c8543eecd5f73" },
@@ -45,12 +45,12 @@ define(["./workbox-f1770938"], function (e) {
         { url: "/_next/static/chunks/27.cdce4415f516cfa2.js", revision: "cdce4415f516cfa2" },
         { url: "/_next/static/chunks/277-6cd9c283f70fe2a1.js", revision: "6cd9c283f70fe2a1" },
         { url: "/_next/static/chunks/4bd1b696-cf72ae8a39fa05aa.js", revision: "cf72ae8a39fa05aa" },
-        { url: "/_next/static/chunks/56-e36322a1a7a3a318.js", revision: "e36322a1a7a3a318" },
+        { url: "/_next/static/chunks/56-53345fd6e47bb673.js", revision: "53345fd6e47bb673" },
+        { url: "/_next/static/chunks/796.1a0a6d3671e730f5.js", revision: "1a0a6d3671e730f5" },
         { url: "/_next/static/chunks/874-668c89038fa04eb8.js", revision: "668c89038fa04eb8" },
-        { url: "/_next/static/chunks/88-6361fe5ebfbbe80c.js", revision: "6361fe5ebfbbe80c" },
+        { url: "/_next/static/chunks/88-38ad444b9c24ea8d.js", revision: "38ad444b9c24ea8d" },
         { url: "/_next/static/chunks/881-12390faad8a7a6d3.js", revision: "12390faad8a7a6d3" },
-        { url: "/_next/static/chunks/885.8889a2dbed3b6ffe.js", revision: "8889a2dbed3b6ffe" },
-        { url: "/_next/static/chunks/904-d047904e25be54c6.js", revision: "d047904e25be54c6" },
+        { url: "/_next/static/chunks/904-7c8da13d5069dbe4.js", revision: "7c8da13d5069dbe4" },
         {
           url: "/_next/static/chunks/app/_not-found/page-4d9efe303e167626.js",
           revision: "4d9efe303e167626",
@@ -64,8 +64,8 @@ define(["./workbox-f1770938"], function (e) {
           revision: "a9a5729894ccf49e",
         },
         {
-          url: "/_next/static/chunks/app/layout-fc4e9648c70629a7.js",
-          revision: "fc4e9648c70629a7",
+          url: "/_next/static/chunks/app/layout-c9ec377028f176fb.js",
+          revision: "c9ec377028f176fb",
         },
         {
           url: "/_next/static/chunks/app/offline/page-160db9f927313762.js",
@@ -152,7 +152,7 @@ define(["./workbox-f1770938"], function (e) {
           url: "/_next/static/chunks/reactPlayerYouTube.d23f8027ecde8deb.js",
           revision: "d23f8027ecde8deb",
         },
-        { url: "/_next/static/chunks/webpack-f9eda976343a1dc4.js", revision: "f9eda976343a1dc4" },
+        { url: "/_next/static/chunks/webpack-9749a64eb14797b3.js", revision: "9749a64eb14797b3" },
         { url: "/_next/static/css/70cce8a52ca0a305.css", revision: "70cce8a52ca0a305" },
         { url: "/bg-dark.png", revision: "200685ec5fb11b7d9ce6fab124362b4d" },
         { url: "/bg-light.png", revision: "057aa4952555b7aa4a88fa1084bfa45d" },

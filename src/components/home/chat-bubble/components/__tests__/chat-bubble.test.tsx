@@ -206,7 +206,10 @@ describe("ChatBubble", () => {
     const messageContainer = screen.getByTestId("text-message").parentElement;
     expect(messageContainer).toHaveClass(
       "inline-block",
-      "max-w-full",
+      "max-w-[280px]",
+      "sm:max-w-[320px]",
+      "md:max-w-[400px]",
+      "lg:max-w-[480px]",
       "px-4",
       "py-3",
       "rounded-2xl",

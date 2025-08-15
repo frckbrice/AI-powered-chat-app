@@ -1,6 +1,6 @@
 # AI-Integrated WhatsApp Clone
 
-A modern, feature-rich WhatsApp-like chat application built with Next.js, featuring AI chat integration, real-time messaging, and a beautiful, responsive UI.
+A modern, feature-rich WhatsApp-like chat application built with Next.js, featuring AI chat integration, real-time messaging, video calling, and a beautiful, responsive UI.
 
 ## 🛠️ Tech Stack
 
@@ -19,6 +19,20 @@ A modern, feature-rich WhatsApp-like chat application built with Next.js, featur
 - **File Storage** for media uploads
 - **User Authentication** with Clerk integration
 
+### **Real-time Communication**
+
+- **WebRTC** for peer-to-peer video calls
+- **ZegoCloud API** for scalable video infrastructure
+- **Real-time messaging** with Convex
+- **Live user presence** and typing indicators
+
+### **AI & External Services**
+
+- **OpenAI GPT-4** for intelligent chat responses
+- **Multi-modal AI** understanding (text, images, videos)
+- **Context-aware conversations** with memory
+- **Smart message processing** and routing
+
 ### **Development Tools**
 
 - **Yarn** package manager
@@ -30,7 +44,7 @@ A modern, feature-rich WhatsApp-like chat application built with Next.js, featur
 
 ### **System Overview**
 
-This project follows a modern, scalable architecture with clear separation of concerns, real-time capabilities, and AI integration.
+This project follows a modern, scalable architecture with clear separation of concerns, real-time capabilities, AI integration, and video calling infrastructure.
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -39,8 +53,8 @@ This project follows a modern, scalable architecture with clear separation of co
 │                 │    │                 │    │                 │
 │ • React 19      │    │ • Real-time DB  │    │ • Clerk Auth    │
 │ • TypeScript    │    │ • File Storage  │    │ • OpenAI API    │
-│ • Tailwind CSS  │    │ • Webhooks      │    │ • WebRTC       │
-│ • PWA Support   │    │ • HTTP Routes   │    │                 │
+│ • Tailwind CSS  │    │ • Webhooks      │    │ • ZegoCloud     │
+│ • PWA Support   │    │ • HTTP Routes   │    │ • WebRTC       │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -52,17 +66,20 @@ This project follows a modern, scalable architecture with clear separation of co
 src/
 ├── app/                          # Next.js App Router
 │   ├── api/                     # API Routes
-│   │   └── video-proxy/         # Video CORS proxy
+│   │   ├── video-proxy/         # Video CORS proxy
+│   │   └── zego-cloud/          # ZegoCloud integration
 │   ├── globals.css              # Global styles
 │   ├── layout.tsx               # Root layout
 │   ├── page.tsx                 # Home page
-│   └── sign-in/                 # Authentication pages
+│   ├── sign-in/                 # Authentication pages
+│   └── video-call/              # Video calling interface
 ├── components/                   # Reusable UI components
 │   ├── home/                    # Main chat components
 │   ├── providers/               # Context providers
 │   │   ├── convex/              # Convex client provider
 │   │   └── theme/               # Theme provider
 │   ├── ui/                      # Base UI components
+│   ├── video-call/              # Video calling components
 │   └── types.ts                 # TypeScript definitions
 ├── hooks/                       # Custom React hooks
 ├── lib/                         # Utility functions
@@ -84,7 +101,8 @@ src/components/home/
 │   │   ├── chat-avatar-action.tsx # Message actions
 │   │   └── date-indicator.tsx  # Date separators
 │   ├── api/                    # Message utilities
-│   │   └── message-utils.ts    # Formatting & styling
+│   │   ├── message-utils.ts    # Formatting & styling
+│   │   └── video-utils.ts      # Video processing
 │   └── index.tsx               # Feature exports
 ├── conversation/                # Conversation management
 ├── message-input/               # Message composition
@@ -95,6 +113,12 @@ src/components/home/
 ├── user-list-dialog/            # User management
 ├── group-members-dialog/        # Group administration
 └── index.tsx                    # Main exports
+
+src/components/video-call/
+├── api/
+│   └── zegoc-cloud-assistant.ts # ZegoCloud integration
+└── components/
+    └── video-ui-kit.tsx        # Video calling interface
 ```
 
 ### **Backend Architecture (Convex)**
@@ -150,8 +174,35 @@ convex/http.ts
 │   ├── user.updated           # Profile updates
 │   ├── session.created        # User login
 │   └── session.ended          # User logout
-└── /video-proxy               # Video CORS proxy (removed)
+└── /video-proxy               # Video CORS proxy
 ```
+
+### **Video Calling Architecture**
+
+#### **ZegoCloud Integration**
+
+```typescript
+// Video calling infrastructure
+src/components/video-call/
+├── api/
+│   └── zegoc-cloud-assistant.ts # ZegoCloud API integration
+└── components/
+    └── video-ui-kit.tsx        # Video calling interface
+
+// Key features:
+- Peer-to-peer video calls
+- Group video conferencing
+- Screen sharing capabilities
+- High-quality video streaming
+- Cross-platform compatibility
+```
+
+#### **WebRTC Implementation**
+
+- **Real-time Communication**: Low-latency video/audio
+- **Peer-to-Peer**: Direct user connections
+- **Fallback Support**: ZegoCloud infrastructure backup
+- **Quality Optimization**: Adaptive bitrate and resolution
 
 ### **State Management**
 
@@ -202,6 +253,13 @@ User Message → AI Processing → OpenAI API → Response Generation →
 Message Creation → Real-time Delivery → Context Preservation
 ```
 
+#### **Video Call Flow**
+
+```
+Call Initiation → ZegoCloud Setup → WebRTC Connection →
+Peer Connection → Video/Audio Stream → Real-time Communication
+```
+
 ### **Security Architecture**
 
 #### **Authentication & Authorization**
@@ -227,7 +285,7 @@ Message Creation → Real-time Delivery → Context Preservation
 - **Bundle Analysis**: Webpack bundle optimization
 - **PWA Support**: Offline capabilities
 
-#### **Backend Optimization made by convex.dev**
+#### **Backend Optimization**
 
 - **Real-time Queries**: Efficient data subscriptions
 - **Indexing**: Optimized database queries
@@ -256,6 +314,7 @@ Message Creation → Real-time Delivery → Context Preservation
 - **Clerk**: Authentication and user management
 - **OpenAI**: AI chat capabilities
 - **Convex**: Backend-as-a-Service
+- **ZegoCloud**: Video calling infrastructure
 - **Vercel**: Hosting and deployment (optional)
 
 #### **API Design**
@@ -272,6 +331,8 @@ Message Creation → Real-time Delivery → Context Preservation
 - Yarn package manager
 - Convex account (for backend)
 - Clerk account (for authentication)
+- ZegoCloud account (for video calls)
+- OpenAI API key (for AI features)
 
 ### **Installation**
 
@@ -292,7 +353,7 @@ Message Creation → Real-time Delivery → Context Preservation
 
    ```bash
    cp .env.example .env.local
-   # Fill in your Convex and Clerk credentials
+   # Fill in your Convex, Clerk, ZegoCloud, and OpenAI credentials
    ```
 
 4. **Start development server**
@@ -303,7 +364,7 @@ Message Creation → Real-time Delivery → Context Preservation
 
 5. **Visit** `http://localhost:3000`
 
-## Usage
+## 🎯 Usage
 
 ### **Starting a Chat**
 
@@ -311,8 +372,14 @@ Message Creation → Real-time Delivery → Context Preservation
 2. Type your message in the input field
 3. Send text, images, or videos
 4. Use AI chat by selecting ChatGPT from the conversation list
-5. Send message to chatgpt by starting the text message by @gpt you-kind-message
-6. start video call or make a group call by clicking the camera icon at the top right and invite members.
+5. Send message to chatgpt by starting the text message with `@gpt your-message`
+
+### **Video Calling**
+
+1. **Start a Call**: Click the camera icon in any conversation
+2. **Group Calls**: Invite multiple participants for group video chats
+3. **Screen Sharing**: Share your screen during calls
+4. **Quality Control**: Adjust video/audio settings in real-time
 
 ### **AI Features**
 
@@ -369,6 +436,10 @@ NEXT_PUBLIC_CONVEX_URL=your_convex_url
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
 CLERK_SECRET_KEY=your_clerk_secret
 
+# ZegoCloud Video Calling
+ZEGOCLOUD_APP_ID=your_zegocloud_app_id
+ZEGOCLOUD_SERVER_SECRET=your_zegocloud_secret
+
 # AI Integration
 OPENAI_API_KEY=your_openai_key
 ```
@@ -405,6 +476,14 @@ OPENAI_API_KEY=your_openai_key
 - Live typing indicators
 - Real-time user presence
 - Live conversation updates
+
+### **Video Calling**
+
+- **High-quality video calls** with WebRTC
+- **Group video conferencing** support
+- **Screen sharing** capabilities
+- **Cross-platform compatibility**
+- **ZegoCloud infrastructure** for scalability
 
 ### **AI-Powered Chat**
 
