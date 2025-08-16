@@ -135,7 +135,7 @@ export default function VideoUIKit() {
 
         const zp = ZegoUIKitPrebuilt.create(kitToken);
         zegoInstanceRef.current = zp;
-        console.log("🏗️ UIKit instance created");
+        console.log("🏗️ ZegoUIKit instance created");
 
         // Set initialization flag BEFORE joining room
         setIsInitialized(true);
@@ -386,40 +386,6 @@ export default function VideoUIKit() {
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Reload Page
-          </button>
-          <button
-            onClick={() => {
-              console.log("🔓 Manual strict lock reset");
-              // strictLockRef.current = false;
-              initializationAttemptedRef.current = false;
-              isInitializingRef.current = false;
-              console.log("🔍 Current state after manual reset:", {
-                // alreadyAttempted: initializationAttemptedRef.current,
-                isInitializing: isInitializingRef.current,
-              });
-            }}
-            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
-          >
-            Reset Locks
-          </button>
-          <button
-            onClick={() => {
-              console.log("💥 Force reset all flags");
-              initializationAttemptedRef.current = false;
-              isInitializingRef.current = false;
-              // isUnmountingRef.current = false;
-              setIsInitialized(false);
-              setError(null);
-              console.log("🔍 Current state after force reset:", {
-                // alreadyAttempted: initializationAttemptedRef.current,
-                isInitializing: isInitializingRef.current,
-                // isUnmounting: isUnmountingRef.current,
-                isInitialized: false,
-              });
-            }}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
-            Force Reset All
           </button>
         </div>
       </div>
