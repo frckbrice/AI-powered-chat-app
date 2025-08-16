@@ -12,9 +12,19 @@ const ChatPlaceHolder = () => {
         <p className="w-1/2 text-center text-gray-primary text-sm text-muted-foreground">
           Select a conversation from the sidebar to start chatting with your contacts.
         </p>
+        <p className="w-1/2 text-center text-gray-primary text-sm text-muted-foreground">
+          Click the video icon with the chat page, to start a video call with your contacts by
+          sending them links to join the call.
+          <br />
+          <span className="text-xs text-gray-primary mt-2">
+            Note: Video calls are currently in beta and may not work as expected.
+          </span>
+        </p>
       </div>
-      <p className="w-1/2 mt-auto text-center text-gray-primary text-xs text-muted-foreground flex items-center justify-center gap-1">
-        <Lock size={10} /> Your personal messages are end-to-end encrypted
+      {/* blink this message after 5 seconds */}
+      <p className="w-1/2 mt-auto text-center text-gray-primary text-xs text-muted-foreground flex items-center justify-center gap-1 ">
+        <Lock size={10} /> Start communicating with chatgpt by starting the message with &quot;@gpt
+        &apos;your message&apos;&quot;
       </p>
     </div>
   );
