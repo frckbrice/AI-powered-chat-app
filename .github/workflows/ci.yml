@@ -71,10 +71,11 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:sha-${{ github.sha }}
-            ghcr.io/${{ github.repository }}:main
+            ghcr.io/frckbrice/ai-powered-chat-app:sha-${{ github.sha }}
+            ghcr.io/frckbrice/ai-powered-chat-app:main
           sbom: true
           provenance: true
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/frckbrice/ai-powered-chat-app:buildcache
+          cache-to: type=registry,ref=ghcr.io/frckbrice/ai-powered-chat-app:buildcache,mode=max
+          labels: |
             org.opencontainers.image.url=https://github.com/${{ github.repository }}
