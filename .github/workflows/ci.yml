@@ -73,6 +73,15 @@ jobs:
           tags: |
             ghcr.io/frckbrice/ai-powered-chat-app:sha-${{ github.sha }}
             ghcr.io/frckbrice/ai-powered-chat-app:main
+          build-args: |
+            NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN=${{ secrets.NEXT_PUBLIC_CLERK_JWT_ISSUER_DOMAIN }}
+            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            CLERK_WEBHOOK_SECRET=${{ secrets.CLERK_WEBHOOK_SECRET }}
+            CLERK_JWT_ISSUER_DOMAIN=${{ secrets.CLERK_JWT_ISSUER_DOMAIN }}
+            CLERK_APP_DOMAIN=${{ secrets.CLERK_APP_DOMAIN }}
+            CONVEX_DEPLOYMENT=${{ secrets.CONVEX_DEPLOYMENT }}
           sbom: true
           provenance: true
           cache-from: type=registry,ref=ghcr.io/frckbrice/ai-powered-chat-app:buildcache
