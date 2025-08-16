@@ -1,12 +1,5 @@
 import { createCipheriv } from "crypto";
 
-enum ErrorCode {
-  appIDInvalid = 1001,
-  userIDInvalid = 1002,
-  secretInvalid = 1003,
-  effectiveTimeInSecondsInvalid = 1004,
-}
-
 function RndNum(a: number, b: number) {
   // Generate a random number within the range of a to b
   return Math.ceil((a + (b - a)) * Math.random());
@@ -62,31 +55,19 @@ export function generateToken04(
   payload?: string,
 ): string {
   if (!appId || typeof appId !== "number") {
-    throw {
-      errorCode: ErrorCode.appIDInvalid,
-      errorMessage: "appID invalid",
-    };
+    throw new Error(`appID invalid: ${appId}`);
   }
 
   if (!userId || typeof userId !== "string") {
-    throw {
-      errorCode: ErrorCode.userIDInvalid,
-      errorMessage: "userId invalid",
-    };
+    throw new Error(`userId invalid: ${userId}`);
   }
 
   if (!secret || typeof secret !== "string" || secret.length !== 32) {
-    throw {
-      errorCode: ErrorCode.secretInvalid,
-      errorMessage: "secret must be a 32 byte string",
-    };
+    throw new Error(`secret must be a 32 byte string, got length: ${secret?.length || 0}`);
   }
 
   if (!effectiveTimeInSeconds || typeof effectiveTimeInSeconds !== "number") {
-    throw {
-      errorCode: ErrorCode.effectiveTimeInSecondsInvalid,
-      errorMessage: "effectiveTimeInSeconds invalid",
-    };
+    throw new Error(`effectiveTimeInSeconds invalid: ${effectiveTimeInSeconds}`);
   }
 
   const createTime = Math.floor(new Date().getTime() / 1000);

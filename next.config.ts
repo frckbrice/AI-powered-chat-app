@@ -63,6 +63,8 @@ const nextConfig: NextConfig = {
       "https:",
       ...(isDev ? ["ws:", "wss:"] : []),
       ...(clerkEnabled ? clerkHosts : []),
+      "https://*.zegocloud.com", // ✅ Allow ZegoCloud API connections
+      "https://*.zego.im", // ✅ Allow ZegoCloud API connections
     ];
     const frameParts = ["'self'", ...(clerkEnabled ? clerkHosts : []), cfTurnstile];
     const imgParts = ["'self'", "data:", "https:", ...(clerkEnabled ? clerkHosts : [])];
@@ -74,6 +76,8 @@ const nextConfig: NextConfig = {
       "blob:",
       "data:",
       "https://mellow-poodle-790.convex.cloud", // ✅ Allow Convex storage media
+      "https://*.zegocloud.com", // ✅ Allow ZegoCloud media
+      "https://*.zego.im", // ✅ Allow ZegoCloud media
     ];
 
     const scriptSrc = scriptParts.join(" ");
@@ -92,7 +96,7 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy", value: "geolocation=(), microphone=(), camera=()" },
+          { key: "Permissions-Policy", value: "geolocation=(), microphone=(self), camera=(self)" },
           {
             key: "Content-Security-Policy",
             value: [
@@ -107,6 +111,8 @@ const nextConfig: NextConfig = {
               `worker-src ${workerSrc}`,
               `child-src ${childSrc}`,
               `media-src ${mediaSrc}`,
+              "object-src 'none'",
+              "base-uri 'self'",
             ].join("; "),
           },
           {
