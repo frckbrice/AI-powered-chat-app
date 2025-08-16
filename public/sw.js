@@ -32,17 +32,17 @@ define(["./workbox-f1770938"], function (e) {
     e.precacheAndRoute(
       [
         {
-          url: "/_next/static/VlrPTSzaveF-gn1qBfQD7/_buildManifest.js",
+          url: "/_next/static/PskWMeJhuuscc0lv6ukW3/_buildManifest.js",
           revision: "0d5ea34e709a928267b1f0b7b0025e53",
         },
         {
-          url: "/_next/static/VlrPTSzaveF-gn1qBfQD7/_ssgManifest.js",
+          url: "/_next/static/PskWMeJhuuscc0lv6ukW3/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/_next/static/chunks/0e5ce63c-b05c8543eecd5f73.js", revision: "b05c8543eecd5f73" },
         { url: "/_next/static/chunks/134.92acb5e9e2e88224.js", revision: "92acb5e9e2e88224" },
         { url: "/_next/static/chunks/237-5efb7154338d200e.js", revision: "5efb7154338d200e" },
-        { url: "/_next/static/chunks/27.1ce61688245226ad.js", revision: "1ce61688245226ad" },
+        { url: "/_next/static/chunks/27.f6f960d78e6618e0.js", revision: "f6f960d78e6618e0" },
         { url: "/_next/static/chunks/277-6cd9c283f70fe2a1.js", revision: "6cd9c283f70fe2a1" },
         { url: "/_next/static/chunks/4bd1b696-cf72ae8a39fa05aa.js", revision: "cf72ae8a39fa05aa" },
         { url: "/_next/static/chunks/56-53345fd6e47bb673.js", revision: "53345fd6e47bb673" },
@@ -152,8 +152,8 @@ define(["./workbox-f1770938"], function (e) {
           url: "/_next/static/chunks/reactPlayerYouTube.d23f8027ecde8deb.js",
           revision: "d23f8027ecde8deb",
         },
-        { url: "/_next/static/chunks/webpack-2576d85ab7412f83.js", revision: "2576d85ab7412f83" },
-        { url: "/_next/static/css/ae1f0ee34b4e1db7.css", revision: "ae1f0ee34b4e1db7" },
+        { url: "/_next/static/chunks/webpack-2f6a1ead2c712a8b.js", revision: "2f6a1ead2c712a8b" },
+        { url: "/_next/static/css/2ba3538e179fd770.css", revision: "2ba3538e179fd770" },
         { url: "/bg-dark.png", revision: "200685ec5fb11b7d9ce6fab124362b4d" },
         { url: "/bg-light.png", revision: "057aa4952555b7aa4a88fa1084bfa45d" },
         { url: "/dall-e.png", revision: "c75f8c5f25a7ca95177d6c89d79b2fbb" },
