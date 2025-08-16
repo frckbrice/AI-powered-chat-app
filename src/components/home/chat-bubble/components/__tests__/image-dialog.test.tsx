@@ -9,19 +9,25 @@ vi.mock("next/image", () => ({
     src,
     alt,
     className,
-    fill,
+    width,
+    height,
+    priority,
   }: {
     src: string;
     alt: string;
     className: string;
-    fill: boolean;
+    width: number;
+    height: number;
+    priority?: boolean;
   }) => (
     <div
       data-testid="next-image"
       data-src={src}
       data-alt={alt}
       data-class={className}
-      data-fill={fill.toString()}
+      data-width={width}
+      data-height={height}
+      data-priority={priority?.toString() || "false"}
     >
       Mock Image: {src}
     </div>
@@ -49,14 +55,21 @@ describe("ImageDialog", () => {
     render(<ImageDialog {...mockProps} />);
     const image = screen.getByTestId("next-image");
     expect(image).toHaveAttribute("data-src", "https://example.com/image.jpg");
-    expect(image).toHaveAttribute("data-alt", "image");
+    expect(image).toHaveAttribute("data-alt", "image preview");
   });
 
   it("applies correct styling to image", () => {
     render(<ImageDialog {...mockProps} />);
     const image = screen.getByTestId("next-image");
-    expect(image).toHaveAttribute("data-class", "rounded-lg object-contain");
-    expect(image).toHaveAttribute("data-fill", "true");
+    expect(image).toHaveAttribute("data-class", "rounded-lg object-contain max-w-full max-h-full");
+    expect(image).toHaveAttribute("data-width", "600");
+    expect(image).toHaveAttribute("data-height", "400");
+  });
+
+  it("sets priority attribute", () => {
+    render(<ImageDialog {...mockProps} />);
+    const image = screen.getByTestId("next-image");
+    expect(image).toHaveAttribute("data-priority", "true");
   });
 
   it("calls onClose when dialog is closed", () => {

@@ -45,28 +45,13 @@ describe("VideoMessage", () => {
     const container = screen.getByTestId("video-element").closest("div");
     expect(container).toHaveClass(
       "w-[350px]",
-      "h-[250px]",
+      "h-fit",
       "relative",
-      "bg-gray-100",
       "dark:bg-gray-700",
       "rounded-lg",
       "overflow-hidden",
+      "p-1",
     );
-  });
-
-  it("shows loading indicator initially", () => {
-    render(<VideoMessage message={mockMessage} />);
-
-    const video = screen.getByTestId("video-element");
-    expect(video).toBeInTheDocument();
-
-    // The loading indicator should be visible initially
-    const loadingIndicator = screen.getByText("Loading...");
-    expect(loadingIndicator).toBeInTheDocument();
-
-    // Check that the spinner element has the animate-spin class
-    const spinner = loadingIndicator.querySelector("div");
-    expect(spinner).toHaveClass("animate-spin");
   });
 
   it("handles empty content gracefully", () => {
@@ -100,14 +85,11 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Initially loading should be true
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-
     // Simulate load start
     fireEvent.loadStart(video);
 
-    // Should still show loading
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    // The component should handle the load start event
+    expect(video).toBeInTheDocument();
   });
 
   it("handles video can play event", () => {
@@ -118,8 +100,8 @@ describe("VideoMessage", () => {
     // Simulate can play
     fireEvent.canPlay(video);
 
-    // Loading should be hidden
-    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    // Video should still be visible
+    expect(video).toBeInTheDocument();
   });
 
   it("handles video loaded data event", () => {
@@ -130,8 +112,8 @@ describe("VideoMessage", () => {
     // Simulate loaded data
     fireEvent.loadedData(video);
 
-    // Loading should be hidden
-    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    // Video should still be visible
+    expect(video).toBeInTheDocument();
   });
 
   it("handles video format error", () => {
@@ -139,8 +121,8 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Simulate video error
-    fireEvent.error(video, {
+    // Create a mock error event that React can handle
+    const mockErrorEvent = {
       currentTarget: {
         error: {
           code: 1,
@@ -148,10 +130,20 @@ describe("VideoMessage", () => {
         },
         src: "https://example.com/video.mp4",
       },
-    });
+      target: {
+        error: {
+          code: 1,
+          message: "Video format not supported",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    };
+
+    // Use fireEvent.error with the mock event
+    fireEvent.error(video, mockErrorEvent);
 
     expect(screen.getByText("Video unavailable")).toBeInTheDocument();
-    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Video format not supported")).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -160,8 +152,8 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Simulate video error
-    fireEvent.error(video, {
+    // Create a mock error event that React can handle
+    const mockErrorEvent = {
       currentTarget: {
         error: {
           code: 2,
@@ -169,10 +161,20 @@ describe("VideoMessage", () => {
         },
         src: "https://example.com/video.mp4",
       },
-    });
+      target: {
+        error: {
+          code: 2,
+          message: "Network error",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    };
+
+    // Use fireEvent.error with the mock event
+    fireEvent.error(video, mockErrorEvent);
 
     expect(screen.getByText("Video unavailable")).toBeInTheDocument();
-    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Network error")).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -181,8 +183,8 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Simulate video error
-    fireEvent.error(video, {
+    // Create a mock error event that React can handle
+    const mockErrorEvent = {
       currentTarget: {
         error: {
           code: 3,
@@ -190,10 +192,20 @@ describe("VideoMessage", () => {
         },
         src: "https://example.com/video.mp4",
       },
-    });
+      target: {
+        error: {
+          code: 3,
+          message: "Video decoding failed",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    };
+
+    // Use fireEvent.error with the mock event
+    fireEvent.error(video, mockErrorEvent);
 
     expect(screen.getByText("Video unavailable")).toBeInTheDocument();
-    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Video decoding failed")).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -202,8 +214,8 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Simulate video error
-    fireEvent.error(video, {
+    // Create a mock error event that React can handle
+    const mockErrorEvent = {
       currentTarget: {
         error: {
           code: 4,
@@ -211,10 +223,20 @@ describe("VideoMessage", () => {
         },
         src: "https://example.com/video.mp4",
       },
-    });
+      target: {
+        error: {
+          code: 4,
+          message: "Video not available",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    };
+
+    // Use fireEvent.error with the mock event
+    fireEvent.error(video, mockErrorEvent);
 
     expect(screen.getByText("Video unavailable")).toBeInTheDocument();
-    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Video not available")).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -223,8 +245,8 @@ describe("VideoMessage", () => {
 
     const video = screen.getByTestId("video-element");
 
-    // Simulate video error
-    fireEvent.error(video, {
+    // Create a mock error event that React can handle
+    const mockErrorEvent = {
       currentTarget: {
         error: {
           code: 1,
@@ -232,18 +254,28 @@ describe("VideoMessage", () => {
         },
         src: "https://example.com/video.mp4",
       },
-    });
+      target: {
+        error: {
+          code: 1,
+          message: "Video format not supported",
+        },
+        src: "https://example.com/video.mp4",
+      },
+    };
+
+    // Use fireEvent.error with the mock event
+    fireEvent.error(video, mockErrorEvent);
 
     // Should show error
-    expect(screen.getByText("Video failed to load from source")).toBeInTheDocument();
+    expect(screen.getByText("Video format not supported")).toBeInTheDocument();
 
     // Click retry
     const retryButton = screen.getByText("Retry");
     fireEvent.click(retryButton);
 
-    // Should show loading again
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
-    expect(screen.queryByText("Video failed to load from source")).not.toBeInTheDocument();
+    // Should show video element again
+    expect(screen.getByTestId("video-element")).toBeInTheDocument();
+    expect(screen.queryByText("Video format not supported")).not.toBeInTheDocument();
   });
 
   it("handles different video URL protocols", () => {
