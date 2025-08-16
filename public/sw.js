@@ -32,11 +32,11 @@ define(["./workbox-f1770938"], function (e) {
     e.precacheAndRoute(
       [
         {
-          url: "/_next/static/0GBi-ni4fiPAfS1NTlNqb/_buildManifest.js",
+          url: "/_next/static/-nyYdiOQ19NbkItg8Lx9q/_buildManifest.js",
           revision: "0d5ea34e709a928267b1f0b7b0025e53",
         },
         {
-          url: "/_next/static/0GBi-ni4fiPAfS1NTlNqb/_ssgManifest.js",
+          url: "/_next/static/-nyYdiOQ19NbkItg8Lx9q/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/_next/static/chunks/0e5ce63c-b05c8543eecd5f73.js", revision: "b05c8543eecd5f73" },
@@ -45,10 +45,10 @@ define(["./workbox-f1770938"], function (e) {
         { url: "/_next/static/chunks/27.f6f960d78e6618e0.js", revision: "f6f960d78e6618e0" },
         { url: "/_next/static/chunks/277-6cd9c283f70fe2a1.js", revision: "6cd9c283f70fe2a1" },
         { url: "/_next/static/chunks/4bd1b696-cf72ae8a39fa05aa.js", revision: "cf72ae8a39fa05aa" },
-        { url: "/_next/static/chunks/56-53345fd6e47bb673.js", revision: "53345fd6e47bb673" },
+        { url: "/_next/static/chunks/56-e36322a1a7a3a318.js", revision: "e36322a1a7a3a318" },
         { url: "/_next/static/chunks/638.bb773022ab406da7.js", revision: "bb773022ab406da7" },
         { url: "/_next/static/chunks/874-668c89038fa04eb8.js", revision: "668c89038fa04eb8" },
-        { url: "/_next/static/chunks/88-38ad444b9c24ea8d.js", revision: "38ad444b9c24ea8d" },
+        { url: "/_next/static/chunks/88-6361fe5ebfbbe80c.js", revision: "6361fe5ebfbbe80c" },
         { url: "/_next/static/chunks/881-12390faad8a7a6d3.js", revision: "12390faad8a7a6d3" },
         { url: "/_next/static/chunks/904-cb88bd71c7f48f23.js", revision: "cb88bd71c7f48f23" },
         {
@@ -152,7 +152,7 @@ define(["./workbox-f1770938"], function (e) {
           url: "/_next/static/chunks/reactPlayerYouTube.d23f8027ecde8deb.js",
           revision: "d23f8027ecde8deb",
         },
-        { url: "/_next/static/chunks/webpack-2f6a1ead2c712a8b.js", revision: "2f6a1ead2c712a8b" },
+        { url: "/_next/static/chunks/webpack-a0f5657fbc076851.js", revision: "a0f5657fbc076851" },
         { url: "/_next/static/css/2ba3538e179fd770.css", revision: "2ba3538e179fd770" },
         { url: "/bg-dark.png", revision: "200685ec5fb11b7d9ce6fab124362b4d" },
         { url: "/bg-light.png", revision: "057aa4952555b7aa4a88fa1084bfa45d" },
