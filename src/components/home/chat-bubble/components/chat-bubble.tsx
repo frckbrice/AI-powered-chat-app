@@ -5,12 +5,13 @@ import { IMessage, IUser } from "../../../types";
 import ChatBubbleAvatar from "./chat-bubble-avatar";
 import DateIndicator from "./date-indicator";
 import ChatAvatarActions from "./chat-avatar-action";
-import { VideoMessage } from "./video-message";
+// import { VideoMessage } from "./video-message";
 import { ImageMessage } from "./image-message";
 import { TextMessage } from "./text-message";
 import { ImageDialog } from "./image-dialog";
 import { MessageTime } from "./message-time";
 import { formatMessageTime, getMessageBackgroundClass } from "../api/message-utils";
+import ReactPlayer from "react-player";
 
 interface ChatBubbleProps {
   message: IMessage;
@@ -18,6 +19,11 @@ interface ChatBubbleProps {
   previousMessage?: IMessage;
 }
 
+const VideoMessage = ({ message }: { message: IMessage }) => {
+  return (
+    <ReactPlayer url={message.content} width="250px" height="250px" controls={true} light={true} />
+  );
+};
 const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
   const time = formatMessageTime(message._creationTime);
   const { selectedConversation } = useConversationStore();
@@ -28,6 +34,8 @@ const ChatBubble = ({ me, message, previousMessage }: ChatBubbleProps) => {
   const bgClass = getMessageBackgroundClass(fromMe, fromAI);
 
   const [open, setOpen] = useState(false);
+
+  console.log(message.content, "message.content");
 
   const renderMessageContent = () => {
     switch (message.messageType) {

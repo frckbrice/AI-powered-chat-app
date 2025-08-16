@@ -15,10 +15,18 @@ export const ImageDialog = ({ src, open, onClose }: ImageDialogProps) => {
         if (!isOpen) onClose();
       }}
     >
-      <DialogContent className="min-w-[750px]">
+      {/* change the color of close button */}
+      <DialogContent className="max-w-[90vw] max-h-[70vh] p-0 overflow-hidden">
         <DialogTitle className="sr-only">Image Preview</DialogTitle>
-        <DialogDescription className="relative h-[450px] flex justify-center">
-          <Image src={src} fill className="rounded-lg object-contain" alt="image" />
+        <DialogDescription className="relative flex justify-center items-center">
+          <Image
+            src={src}
+            width={600}
+            height={400}
+            className="rounded-lg object-contain max-w-full max-h-full"
+            alt="image preview"
+            priority
+          />
         </DialogDescription>
       </DialogContent>
     </Dialog>

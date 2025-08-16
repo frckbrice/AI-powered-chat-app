@@ -31,41 +31,26 @@ export const MediaVideoDialog = ({
     setIsVideoPlaying(false);
 
     try {
-      // Try blob URL first (most reliable for videos)
+      // Create blob URL for the video file
       const videoUrl = URL.createObjectURL(selectedVideo);
+      console.log("Created video blob URL:", videoUrl);
+
       setRenderedVideo(videoUrl);
       setVideoError(null);
       setIsVideoLoading(false);
 
       // Cleanup function to revoke object URL when component unmounts or video changes
       return () => {
+        console.log("Revoking video blob URL:", videoUrl);
         URL.revokeObjectURL(videoUrl);
       };
     } catch (error) {
       console.error("Error creating video URL:", error);
-
-      // Fallback to FileReader if blob URL fails
-      try {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          setRenderedVideo(result);
-          setVideoError(null);
-          setIsVideoLoading(false);
-        };
-        reader.onerror = () => {
-          setVideoError("Failed to load video");
-          setRenderedVideo(null);
-          setIsVideoLoading(false);
-        };
-        reader.readAsDataURL(selectedVideo);
-      } catch (fallbackError) {
-        console.error("Fallback video loading also failed:", fallbackError);
-        setVideoError("Failed to load video");
-        setRenderedVideo(null);
-        setIsVideoLoading(false);
-        setIsVideoPlaying(false);
-      }
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      setVideoError(`Failed to create video URL: ${errorMessage}`);
+      setRenderedVideo(null);
+      setIsVideoLoading(false);
+      setIsVideoPlaying(false);
     }
   }, [selectedVideo]);
 
@@ -111,40 +96,64 @@ export const MediaVideoDialog = ({
         if (!isOpen) onClose();
       }}
     >
-      <DialogContent>
+      <DialogContent className="flex-1 w-full min-h-[500px] max-w-[90vw] max-h-[80vh]">
         <DialogTitle>Send Video</DialogTitle>
         <DialogDescription>Video</DialogDescription>
         <div className="w-full">
           {videoError ? (
-            <div className="text-red-500 text-center py-4">{videoError}</div>
+            <div className="text-red-500 text-center py-4">
+              <div className="mb-2">{videoError}</div>
+              <div className="text-xs text-gray-500">Check console for more details</div>
+            </div>
           ) : isVideoLoading ? (
-            <div className="text-center py-4 text-gray-500">Loading video...</div>
+            <div className="text-center py-4 text-gray-500">
+              <div className="mb-2">Loading video...</div>
+              <div className="text-xs">Creating video preview...</div>
+            </div>
           ) : renderedVideo ? (
             <div className="relative">
-              <ReactPlayer
-                src={renderedVideo}
-                controls
-                width="100%"
-                height="auto"
-                onError={handleVideoError}
-                onReady={handleVideoReady}
-                onStart={handleVideoStart}
-                onPause={handleVideoPause}
-                onEnded={handleVideoEnd}
-                playing={false}
-                loop={false}
-                muted={false}
-                volume={1}
-                playbackRate={1}
-                config={{
-                  file: {
-                    attributes: {
-                      controlsList: "nodownload",
-                      preload: "metadata",
+              <div className="w-full max-h-[400px] flex justify-center">
+                <ReactPlayer
+                  url={renderedVideo}
+                  controls
+                  width="100%"
+                  height="auto"
+                  style={{ maxHeight: "400px" }}
+                  onError={handleVideoError}
+                  onReady={handleVideoReady}
+                  onStart={handleVideoStart}
+                  onPause={handleVideoPause}
+                  onEnded={handleVideoEnd}
+                  playing={false}
+                  loop={false}
+                  muted={false}
+                  volume={1}
+                  playbackRate={1}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: "nodownload",
+                        preload: "metadata",
+                        crossOrigin: "anonymous",
+                      },
+                      forceVideo: true,
                     },
-                  },
-                }}
-              />
+                  }}
+                />
+
+                {/* Fallback video element in case ReactPlayer fails */}
+                <video
+                  src={renderedVideo}
+                  controls
+                  className="hidden"
+                  onError={(e) => {
+                    console.log("Fallback video element error:", e);
+                  }}
+                  onLoadedMetadata={() => {
+                    console.log("Fallback video metadata loaded");
+                  }}
+                />
+              </div>
 
               <div className="mt-2 text-center">
                 <div
