@@ -216,7 +216,7 @@ export const VideoMessage = ({ message }: VideoMessageProps) => {
   }
 
   return (
-    <div className="w-[350px] h-[250px] relative bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+    <div className="w-[350px] h-fit relative  dark:bg-gray-700 rounded-lg overflow-hidden p-1">
       <video
         data-testid="video-element"
         src={videoBlob || message.content}
@@ -243,14 +243,14 @@ export const VideoMessage = ({ message }: VideoMessageProps) => {
       </video>
 
       {/* Loading indicator */}
-      {isLoading && (
+      {/* {isLoading && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="text-white text-sm flex items-center gap-2">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
             Loading...
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

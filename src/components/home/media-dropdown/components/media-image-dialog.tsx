@@ -34,10 +34,10 @@ export const MediaImageDialog = ({
         if (!isOpen) onClose();
       }}
     >
-      <DialogContent className="flex-1 w-full h-full">
+      <DialogContent className="flex-1 w-full min-h-[500px]">
         <DialogDescription className="flex flex-col gap-10 justify-center items-center">
           {renderedImage && (
-            <Image src={renderedImage} width={300} height={300} alt="selected image" />
+            <Image src={renderedImage} width={500} height={500} alt="selected image" />
           )}
           <Button className="w-full" disabled={isLoading} onClick={handleSendImage}>
             {isLoading ? "Sending..." : "Send"}
